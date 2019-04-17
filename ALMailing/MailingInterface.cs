@@ -14,7 +14,7 @@ namespace ALMailing
 
         #region Methods
         string SendSingleMail(SmtpClient smtp, MailMessage mail);
-        string SendMails();
+        string SendMails(SmtpClient smtp, List<MailMessage> lmail);
         #endregion
     }
 }

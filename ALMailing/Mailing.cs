@@ -70,14 +70,25 @@ namespace ALMailing
         #endregion
 
         #region Public Methods
-        public string SendMails()
+        public string SendMails(SmtpClient smtp, List<MailMessage> lmail)
         {
             throw new NotImplementedException();
         }
 
         public string SendSingleMail(SmtpClient smtp, MailMessage mail)
         {
-            throw new NotImplementedException();
+            string msg = "";
+            Task task = Send(smtp, mail);
+            task.Wait();
+
+            if (task.Exception != null)
+            {
+                msg = task.Exception.Message;
+            }
+
+            task.Dispose();
+
+            return msg;
         }
         #endregion
 
@@ -87,6 +98,14 @@ namespace ALMailing
             m_credential = new List<NetworkCredential>();
             m_mail = new List<MailMessage>();
             m_smtp = new List<SmtpClient>();
+        }
+
+        private async Task Send(SmtpClient smtp, MailMessage mail)
+        {
+            using (smtp)
+            {
+                await smtp.SendMailAsync(mail);
+            }
         }
         #endregion
     }
