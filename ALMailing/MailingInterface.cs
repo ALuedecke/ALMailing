@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Net.Mail;
-using System.Threading.Tasks;
 using System.Net;
 
 namespace ALMailing
@@ -14,7 +13,8 @@ namespace ALMailing
         #endregion
 
         #region Methods
-        void SendSingleMail(SmtpClient smtp, MailMessage mail);
+        string SendSingleMail(SmtpClient smtp, MailMessage mail);
+        string SendMails();
         #endregion
     }
 }
