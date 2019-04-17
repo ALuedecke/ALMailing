@@ -112,7 +112,7 @@ namespace ALMailingTest
                         "Solche Aktionen können voll in die Hose gehen und dann ist das Geschrei groß.\n" +
                         "Du bist entlarvt und es wurde Anzeige erstattet. Freue dich auf den Besuch eines Sondereinsatzkommandos.\n\n\n Der Anti-Hacker";
             smtp.UseDefaultCredentials = false;
-            smtp.Credentials = new NetworkCredential("thomas@dr-pfannschmidt.de", "Thomas!002");
+            smtp.Credentials = new NetworkCredential("xxxxxxxxx", "xxxxxx");
 
             string msg = mailing.SendSingleMail(smtp, mail);
 
