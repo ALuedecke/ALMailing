@@ -101,14 +101,18 @@ namespace ALMailingTest
         {
             Mailing mailing = new Mailing();
             SmtpClient smtp = new SmtpClient("smtp.1und1.de", 587);
-            MailMessage mail = new MailMessage("a_luedecke@gmx.de", "a_luedecke@gmx.de");
+            MailMessage mail = new MailMessage(
+                                 new MailAddress("andreas.luedecke@kontacts.de", "andreas.luedecke"),
+                                 new MailAddress("andreas.luedecke@kontacts.de", "andreas.luedecke")
+                               );
 
-            mail.Subject = "Dein Account wurde gehackt!";
-            mail.Body = "Irgend so ein blöder Wichser denkt er könnte groß in Bitcoins abkassieren, " +
-                        "dass er sich da mal nicht täuscht.\n" +
-                        "Solche Aktionen können voll in die Hose gehen " +
-                        "und dann ist das Geschrei groß.\n\n\n Der Anti-Hacker";
-            smtp.Credentials = new NetworkCredential("andreas.luedecke@kontacts.de", "L@ydas!004");
+            mail.Subject = "Deine Geräte wurden gehackt!";
+            mail.Body = "An den Möchtegern-Hacker,\n\n" +
+                        "du glaubst mit dieser Masche groß in Bitcoins abkassieren zu können, täusch dich mal nicht.\n" +
+                        "Solche Aktionen können voll in die Hose gehen und dann ist das Geschrei groß.\n" +
+                        "Du bist entlarvt und es wurde Anzeige erstattet. Freue dich auf den Besuch eines Sondereinsatzkommandos.\n\n\n Der Anti-Hacker";
+            smtp.UseDefaultCredentials = false;
+            smtp.Credentials = new NetworkCredential("thomas@dr-pfannschmidt.de", "Thomas!002");
 
             string msg = mailing.SendSingleMail(smtp, mail);
 

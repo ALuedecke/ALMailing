@@ -72,7 +72,14 @@ namespace ALMailing
         #region Public Methods
         public string SendMails(SmtpClient smtp, List<MailMessage> lmail)
         {
-            throw new NotImplementedException();
+            string msg = "";
+
+            foreach(MailMessage mail in lmail)
+            {
+                msg += SendSingleMail(smtp, mail);
+            }
+
+            return msg;
         }
 
         public string SendSingleMail(SmtpClient smtp, MailMessage mail)
