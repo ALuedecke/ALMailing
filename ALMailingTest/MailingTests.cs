@@ -1,9 +1,11 @@
 ﻿using ALMailing;
 using NUnit.Framework;
+using System.Configuration;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
 using System.Net;
+using System.Net.Configuration;
 
 namespace ALMailingTest
 {
@@ -99,12 +101,17 @@ namespace ALMailingTest
         [Test]
         public void MailingSendSingleMail()
         {
+            Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            MailSettingsSectionGroup mailsettings = (MailSettingsSectionGroup) config.GetSectionGroup("system.net/mailSettings");
             Mailing mailing = new Mailing();
-            SmtpClient smtp = new SmtpClient("smtp.1und1.de", 587);
             MailMessage mail = new MailMessage(
-                                 new MailAddress("andreas.luedecke@kontacts.de", "andreas.luedecke"),
-                                 new MailAddress("andreas.luedecke@kontacts.de", "andreas.luedecke")
+                                 new MailAddress(mailsettings.Smtp.From),
+                                 new MailAddress(mailsettings.Smtp.From)
                                );
+            SmtpClient smtp = new SmtpClient(
+                                mailsettings.Smtp.Network.Host,
+                                (int)mailsettings.Smtp.Network.Port
+                              );
 
             mail.Subject = "Deine Geräte wurden gehackt!";
             mail.Body = "An den Möchtegern-Hacker,\n\n" +
@@ -112,7 +119,10 @@ namespace ALMailingTest
                         "Solche Aktionen können voll in die Hose gehen und dann ist das Geschrei groß.\n" +
                         "Du bist entlarvt und es wurde Anzeige erstattet. Freue dich auf den Besuch eines Sondereinsatzkommandos.\n\n\n Der Anti-Hacker";
             smtp.UseDefaultCredentials = false;
-            smtp.Credentials = new NetworkCredential("xxxxxxxxx", "xxxxxx");
+            smtp.Credentials = new NetworkCredential(
+                                 mailsettings.Smtp.Network.UserName,
+                                 mailsettings.Smtp.Network.Password
+                               );
 
             string msg = mailing.SendSingleMail(smtp, mail);
 
