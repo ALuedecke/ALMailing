@@ -128,5 +128,111 @@ namespace ALMailingTest
 
             Assert.IsEmpty(msg);
         }
+
+        [Test]
+        public void MailingSendSingleMailHtml()
+        {
+            Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            MailSettingsSectionGroup mailsettings = (MailSettingsSectionGroup)config.GetSectionGroup("system.net/mailSettings");
+            Mailing mailing = new Mailing();
+            MailMessage mail = new MailMessage(
+                                 new MailAddress(mailsettings.Smtp.From),
+                                 new MailAddress(mailsettings.Smtp.From)
+                               );
+            SmtpClient smtp = new SmtpClient(
+                                mailsettings.Smtp.Network.Host,
+                                (int)mailsettings.Smtp.Network.Port
+                              );
+            string img_file = "C:\\Users\\LuedeckeA\\Pictures\\Saved Pictures\\logo.png";
+            mail.Subject = "Du wurdest gehackt!";
+            mail.IsBodyHtml = true;
+            mail.Body = "<html>" +
+                        "<body>" +
+                        "<div>" +
+                        "An den Möchtegern-Hacker,<br /><br />" +
+                        "du glaubst mit dieser Masche groß in Bitcoins abkassieren zu können, täusch dich mal nicht.<br />" +
+                        "Solche Aktionen können voll in die Hose gehen und dann ist das Geschrei groß.<br />" +
+                        "Du bist entlarvt und es wurde Anzeige erstattet. Freue dich auf den Besuch eines Sondereinsatzkommandos.<br /><br />" +
+                        "<span style=\"color:#800000; font-weight:bold;\">Der Anti-Hacker</span>" +
+                        "</div>" +
+                        "<img src=\"cid:logo.png\" width=\"100\">" +
+                        "</body>" +
+                        "</html>";
+            mail.Attachments.Add(new Attachment(img_file));
+            mail.Attachments[0].ContentId = "logo.png";
+            smtp.UseDefaultCredentials = false;
+            smtp.Credentials = new NetworkCredential(
+                                 mailsettings.Smtp.Network.UserName,
+                                 mailsettings.Smtp.Network.Password
+                               );
+
+            string msg = mailing.SendSingleMail(smtp, mail);
+
+            Assert.IsEmpty(msg);
+        }
+
+        [Test]
+        public void MailingSendMailsHtml()
+        {
+            Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            List<string> laddress = new List<string>()
+            {
+                //"alfred.liesecke@kontacts.de",
+                "andreas.luedecke@kontacts.de",
+                "a_luedecke@gmx.de",
+                "Andreas.Luedecke@partner.comparex.com"
+                /*"andreas.penzold@kontacts.de",
+                "azamat.khasanov@kontacts.de",
+                "ettker@posteo.de",
+                "michael.kickmunter@kontacts.de",
+                "michael.leben@kontacts.de",
+                "sl@kontacts.de",
+                "stefan.neugebauer@kontacts.de"*/
+            };
+            List<MailMessage> lmail = new List<MailMessage>();
+            MailSettingsSectionGroup mailsettings = (MailSettingsSectionGroup)config.GetSectionGroup("system.net/mailSettings");
+            Mailing mailing = new Mailing();
+            string img_file = "C:\\Users\\LuedeckeA\\Pictures\\Saved Pictures\\logo.png";
+
+            foreach (string address in laddress)
+            {
+                MailMessage mail = new MailMessage(
+                                     new MailAddress(address),
+                                     new MailAddress(address)
+                                   );
+                mail.Subject = "Du wurdest gehackt!";
+                mail.IsBodyHtml = true;
+                mail.Body = "<html>" +
+                            "<body>" +
+                            "<div>" +
+                            "An den Möchtegern-Hacker,<br /><br />" +
+                            "du glaubst mit dieser Masche groß in Bitcoins abkassieren zu können, täusch dich mal nicht.<br />" +
+                            "Solche Aktionen können voll in die Hose gehen und dann ist das Geschrei groß.<br />" +
+                            "Du bist entlarvt und es wurde Anzeige erstattet. Freue dich auf den Besuch eines Sondereinsatzkommandos.<br /><br />" +
+                            "<span style=\"color:#800000; font-weight:bold;\">Der Anti-Hacker</span>" +
+                            "</div>" +
+                            "<img src=\"cid:logo.png\" width=\"100\">" +
+                            "</body>" +
+                            "</html>";
+                mail.Attachments.Add(new Attachment(img_file));
+                mail.Attachments[0].ContentId = "logo.png";
+
+                lmail.Add(mail);
+            }
+
+            SmtpClient smtp = new SmtpClient(
+                                mailsettings.Smtp.Network.Host,
+                                (int)mailsettings.Smtp.Network.Port
+                              );
+            smtp.UseDefaultCredentials = false;
+            smtp.Credentials = new NetworkCredential(
+                                 mailsettings.Smtp.Network.UserName,
+                                 mailsettings.Smtp.Network.Password
+                               );
+
+            string msg = mailing.SendMails(smtp, lmail);
+
+            Assert.IsEmpty(msg);
+        }
     }
 }

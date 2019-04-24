@@ -72,11 +72,26 @@ namespace ALMailing
         #region Public Methods
         public string SendMails(SmtpClient smtp, List<MailMessage> lmail)
         {
+            List<Task> ltask = new List<Task>();
             string msg = "";
 
-            foreach(MailMessage mail in lmail)
+
+            foreach (MailMessage mail in lmail)
             {
-                msg += SendSingleMail(smtp, mail);
+                Task task = Send(smtp, mail);
+                ltask.Add(task);
+            }
+
+            try
+            {
+                Task.WaitAll(ltask.ToArray());
+            }
+            catch (AggregateException ae)
+            {
+                foreach(Exception e in ae.InnerExceptions)
+                {
+                    msg += e.Message;
+                }
             }
 
             return msg;
