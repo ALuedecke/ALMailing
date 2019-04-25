@@ -113,11 +113,8 @@ namespace ALMailingTest
                                 (int) mailsettings.Smtp.Network.Port
                               );
 
-            mail.Subject = "Deine Geräte wurden gehackt!";
-            mail.Body = "An den Möchtegern-Hacker,\n\n" +
-                        "du glaubst mit dieser Masche groß in Bitcoins abkassieren zu können, täusch dich mal nicht.\n" +
-                        "Solche Aktionen können voll in die Hose gehen und dann ist das Geschrei groß.\n" +
-                        "Du bist entlarvt und es wurde Anzeige erstattet. Freue dich auf den Besuch eines Sondereinsatzkommandos.\n\n\n Der Anti-Hacker";
+            mail.Subject = ConfigurationManager.AppSettings["mailSubject"];
+            mail.Body = mailing.GetMailBodyFromTemplate(ConfigurationManager.AppSettings["mailBodyTxtTemplate"]);
             smtp.UseDefaultCredentials = false;
             smtp.Credentials = new NetworkCredential(
                                  mailsettings.Smtp.Network.UserName,
