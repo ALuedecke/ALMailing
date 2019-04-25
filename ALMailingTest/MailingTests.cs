@@ -133,7 +133,7 @@ namespace ALMailingTest
         public void MailingSendSingleMailHtml()
         {
             Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-            MailSettingsSectionGroup mailsettings = (MailSettingsSectionGroup)config.GetSectionGroup("system.net/mailSettings");
+            MailSettingsSectionGroup mailsettings = (MailSettingsSectionGroup) config.GetSectionGroup("system.net/mailSettings");
             Mailing mailing = new Mailing();
             MailMessage mail = new MailMessage(
                                  new MailAddress(mailsettings.Smtp.From),
@@ -143,22 +143,11 @@ namespace ALMailingTest
                                 mailsettings.Smtp.Network.Host,
                                 (int) mailsettings.Smtp.Network.Port
                               );
-            string img_file = "C:\\Users\\LuedeckeA\\Pictures\\Saved Pictures\\logo.png";
-            mail.Subject = "Du wurdest gehackt!";
+
+            mail.Subject = ConfigurationManager.AppSettings["mailSubject"];
             mail.IsBodyHtml = true;
-            mail.Body = "<html>" +
-                        "<body>" +
-                        "<div>" +
-                        "An den Möchtegern-Hacker,<br /><br />" +
-                        "du glaubst mit dieser Masche groß in Bitcoins abkassieren zu können, täusch dich mal nicht.<br />" +
-                        "Solche Aktionen können voll in die Hose gehen und dann ist das Geschrei groß.<br />" +
-                        "Du bist entlarvt und es wurde Anzeige erstattet. Freue dich auf den Besuch eines Sondereinsatzkommandos.<br /><br />" +
-                        "<span style=\"color:#800000; font-weight:bold;\">Der Anti-Hacker</span>" +
-                        "</div>" +
-                        "<img src=\"cid:logo.png\" width=\"100\">" +
-                        "</body>" +
-                        "</html>";
-            mail.Attachments.Add(new Attachment(img_file));
+            mail.Body = mailing.GetMailBodyFromTemplate(ConfigurationManager.AppSettings["mailBodyHtmlTemplate"]);
+            mail.Attachments.Add(new Attachment(ConfigurationManager.AppSettings["mailBodyImageFile"]));
             mail.Attachments[0].ContentId = "logo.png";
             smtp.UseDefaultCredentials = false;
             smtp.Credentials = new NetworkCredential(
@@ -171,38 +160,27 @@ namespace ALMailingTest
             Assert.IsEmpty(msg);
         }
 
-        [TestCase("andreas.luedecke@kontacts.de", "")]
-        [TestCase("a_luedecke@gmx.de", "")]
-        [TestCase("a.luedecke4@gmail.com", "")]
-        public void MailingSendSingleMailHtmlWithInput(string mailaddress, string expected)
+        [TestCase("anti.hacker@mailcontrol.com", "andreas.luedecke@kontacts.de", "")]
+        [TestCase("anti.hacker@mailcontrol.com", "a_luedecke@gmx.de", "")]
+        [TestCase("anti.hacker@mailcontrol.com", "a.luedecke4@gmail.com", "")]
+        public void MailingSendSingleMailHtmlWithInput(string from, string to, string expected)
         {
             Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
             MailSettingsSectionGroup mailsettings = (MailSettingsSectionGroup)config.GetSectionGroup("system.net/mailSettings");
             Mailing mailing = new Mailing();
             MailMessage mail = new MailMessage(
-                                 new MailAddress(mailaddress),
-                                 new MailAddress(mailaddress)
+                                 new MailAddress(from),
+                                 new MailAddress(to)
                                );
             SmtpClient smtp = new SmtpClient(
                                 mailsettings.Smtp.Network.Host,
                                 (int) mailsettings.Smtp.Network.Port
                               );
-            string img_file = "C:\\Users\\LuedeckeA\\Pictures\\Saved Pictures\\logo.png";
-            mail.Subject = "Du wurdest gehackt!";
+
+            mail.Subject = ConfigurationManager.AppSettings["mailSubject"];
             mail.IsBodyHtml = true;
-            mail.Body = "<html>" +
-                        "<body>" +
-                        "<div>" +
-                        "An den Möchtegern-Hacker,<br /><br />" +
-                        "du glaubst mit dieser Masche groß in Bitcoins abkassieren zu können, täusch dich mal nicht.<br />" +
-                        "Solche Aktionen können voll in die Hose gehen und dann ist das Geschrei groß.<br />" +
-                        "Du bist entlarvt und es wurde Anzeige erstattet. Freue dich auf den Besuch eines Sondereinsatzkommandos.<br /><br />" +
-                        "<span style=\"color:#800000; font-weight:bold;\">Der Anti-Hacker</span>" +
-                        "</div>" +
-                        "<img src=\"cid:logo.png\" width=\"100\">" +
-                        "</body>" +
-                        "</html>";
-            mail.Attachments.Add(new Attachment(img_file));
+            mail.Body = mailing.GetMailBodyFromTemplate(ConfigurationManager.AppSettings["mailBodyHtmlTemplate"]);
+            mail.Attachments.Add(new Attachment(ConfigurationManager.AppSettings["mailBodyImageFile"]));
             mail.Attachments[0].ContentId = "logo.png";
             smtp.UseDefaultCredentials = false;
             smtp.Credentials = new NetworkCredential(
@@ -224,7 +202,8 @@ namespace ALMailingTest
                 //"alfred.liesecke@kontacts.de",
                 "andreas.luedecke@kontacts.de",
                 "a_luedecke@gmx.de",
-                "a.luedecke4@gmail.com"
+                "a.luedecke4@gmail.com",
+                "c.kapella@freenet.de"
                 /*"andreas.penzold@kontacts.de",
                 "azamat.khasanov@kontacts.de",
                 "ettker@posteo.de",
@@ -234,7 +213,9 @@ namespace ALMailingTest
             List<MailMessage> lmail = new List<MailMessage>();
             MailSettingsSectionGroup mailsettings = (MailSettingsSectionGroup)config.GetSectionGroup("system.net/mailSettings");
             Mailing mailing = new Mailing();
-            string img_file = "C:\\Users\\LuedeckeA\\Pictures\\Saved Pictures\\logo.png";
+            string img_file = ConfigurationManager.AppSettings["mailBodyImageFile"];
+            string mailbody = mailing.GetMailBodyFromTemplate(ConfigurationManager.AppSettings["mailBodyHtmlTemplate"]);
+            string mailsubject = ConfigurationManager.AppSettings["mailSubject"];
 
             foreach (string address in laddress)
             {
@@ -242,20 +223,9 @@ namespace ALMailingTest
                                      new MailAddress(address),
                                      new MailAddress(address)
                                    );
-                mail.Subject = "Du wurdest gehackt!";
+                mail.Subject = mailsubject;
                 mail.IsBodyHtml = true;
-                mail.Body = "<html>" +
-                            "<body>" +
-                            "<div>" +
-                            "An den Möchtegern-Hacker,<br /><br />" +
-                            "du glaubst mit dieser Masche groß in Bitcoins abkassieren zu können, täusch dich mal nicht.<br />" +
-                            "Solche Aktionen können voll in die Hose gehen und dann ist das Geschrei groß.<br />" +
-                            "Du bist entlarvt und es wurde Anzeige erstattet. Freue dich auf den Besuch eines Sondereinsatzkommandos.<br /><br />" +
-                            "<span style=\"color:#800000; font-weight:bold;\">Der Anti-Hacker</span>" +
-                            "</div>" +
-                            "<img src=\"cid:logo.png\" width=\"100\">" +
-                            "</body>" +
-                            "</html>";
+                mail.Body = mailbody;
                 mail.Attachments.Add(new Attachment(img_file));
                 mail.Attachments[0].ContentId = "logo.png";
 

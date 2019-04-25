@@ -13,6 +13,7 @@ namespace ALMailing
         #endregion
 
         #region Methods
+        string GetMailBodyFromTemplate(string path);
         string SendSingleMail(SmtpClient smtp, MailMessage mail);
         string SendMails(SmtpClient smtp, List<MailMessage> lmail);
         #endregion

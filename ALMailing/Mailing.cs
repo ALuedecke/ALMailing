@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
@@ -70,6 +71,18 @@ namespace ALMailing
         #endregion
 
         #region Public Methods
+        public string GetMailBodyFromTemplate(string path)
+        {
+            string template = "";
+
+            if (File.Exists(path))
+            {
+                template = File.ReadAllText(path);
+            }
+
+            return template;
+        }
+
         public string SendMails(SmtpClient smtp, List<MailMessage> lmail)
         {
             List<Task> ltask = new List<Task>();
