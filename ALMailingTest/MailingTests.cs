@@ -110,7 +110,7 @@ namespace ALMailingTest
                                );
             SmtpClient smtp = new SmtpClient(
                                 mailsettings.Smtp.Network.Host,
-                                (int)mailsettings.Smtp.Network.Port
+                                (int) mailsettings.Smtp.Network.Port
                               );
 
             mail.Subject = "Deine Geräte wurden gehackt!";
@@ -141,7 +141,7 @@ namespace ALMailingTest
                                );
             SmtpClient smtp = new SmtpClient(
                                 mailsettings.Smtp.Network.Host,
-                                (int)mailsettings.Smtp.Network.Port
+                                (int) mailsettings.Smtp.Network.Port
                               );
             string img_file = "C:\\Users\\LuedeckeA\\Pictures\\Saved Pictures\\logo.png";
             mail.Subject = "Du wurdest gehackt!";
@@ -171,6 +171,50 @@ namespace ALMailingTest
             Assert.IsEmpty(msg);
         }
 
+        [TestCase("andreas.luedecke@kontacts.de", "")]
+        [TestCase("a_luedecke@gmx.de", "")]
+        [TestCase("a.luedecke4@gmail.com", "")]
+        public void MailingSendSingleMailHtmlWithInput(string mailaddress, string expected)
+        {
+            Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            MailSettingsSectionGroup mailsettings = (MailSettingsSectionGroup)config.GetSectionGroup("system.net/mailSettings");
+            Mailing mailing = new Mailing();
+            MailMessage mail = new MailMessage(
+                                 new MailAddress(mailaddress),
+                                 new MailAddress(mailaddress)
+                               );
+            SmtpClient smtp = new SmtpClient(
+                                mailsettings.Smtp.Network.Host,
+                                (int) mailsettings.Smtp.Network.Port
+                              );
+            string img_file = "C:\\Users\\LuedeckeA\\Pictures\\Saved Pictures\\logo.png";
+            mail.Subject = "Du wurdest gehackt!";
+            mail.IsBodyHtml = true;
+            mail.Body = "<html>" +
+                        "<body>" +
+                        "<div>" +
+                        "An den Möchtegern-Hacker,<br /><br />" +
+                        "du glaubst mit dieser Masche groß in Bitcoins abkassieren zu können, täusch dich mal nicht.<br />" +
+                        "Solche Aktionen können voll in die Hose gehen und dann ist das Geschrei groß.<br />" +
+                        "Du bist entlarvt und es wurde Anzeige erstattet. Freue dich auf den Besuch eines Sondereinsatzkommandos.<br /><br />" +
+                        "<span style=\"color:#800000; font-weight:bold;\">Der Anti-Hacker</span>" +
+                        "</div>" +
+                        "<img src=\"cid:logo.png\" width=\"100\">" +
+                        "</body>" +
+                        "</html>";
+            mail.Attachments.Add(new Attachment(img_file));
+            mail.Attachments[0].ContentId = "logo.png";
+            smtp.UseDefaultCredentials = false;
+            smtp.Credentials = new NetworkCredential(
+                                 mailsettings.Smtp.Network.UserName,
+                                 mailsettings.Smtp.Network.Password
+                               );
+
+            string msg = mailing.SendSingleMail(smtp, mail);
+
+            Assert.AreEqual(expected, msg);
+        }
+
         [Test]
         public void MailingSendMailsHtml()
         {
@@ -180,14 +224,12 @@ namespace ALMailingTest
                 //"alfred.liesecke@kontacts.de",
                 "andreas.luedecke@kontacts.de",
                 "a_luedecke@gmx.de",
-                "Andreas.Luedecke@partner.comparex.com"
+                "a.luedecke4@gmail.com"
                 /*"andreas.penzold@kontacts.de",
                 "azamat.khasanov@kontacts.de",
                 "ettker@posteo.de",
                 "michael.kickmunter@kontacts.de",
-                "michael.leben@kontacts.de",
-                "sl@kontacts.de",
-                "stefan.neugebauer@kontacts.de"*/
+                "sl@kontacts.de"*/
             };
             List<MailMessage> lmail = new List<MailMessage>();
             MailSettingsSectionGroup mailsettings = (MailSettingsSectionGroup)config.GetSectionGroup("system.net/mailSettings");
@@ -222,7 +264,7 @@ namespace ALMailingTest
 
             SmtpClient smtp = new SmtpClient(
                                 mailsettings.Smtp.Network.Host,
-                                (int)mailsettings.Smtp.Network.Port
+                                (int) mailsettings.Smtp.Network.Port
                               );
             smtp.UseDefaultCredentials = false;
             smtp.Credentials = new NetworkCredential(

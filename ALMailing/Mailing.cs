@@ -76,21 +76,19 @@ namespace ALMailing
             string msg = "";
 
 
-            foreach (MailMessage mail in lmail)
+            using (smtp)
             {
-                Task task = Send(smtp, mail);
-                ltask.Add(task);
-            }
-
-            try
-            {
-                Task.WaitAll(ltask.ToArray());
-            }
-            catch (AggregateException ae)
-            {
-                foreach(Exception e in ae.InnerExceptions)
+                foreach (MailMessage mail in lmail)
                 {
-                    msg += e.Message;
+                    try
+                    {
+                        smtp.Send(mail);
+                    }
+                    catch (Exception e)
+                    {
+                        msg += e.Message + '\n';
+                    }
+
                 }
             }
 
