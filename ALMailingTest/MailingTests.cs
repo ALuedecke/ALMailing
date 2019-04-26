@@ -141,9 +141,12 @@ namespace ALMailingTest
                                 (int) mailsettings.Smtp.Network.Port
                               );
 
+            string[] addresspart = mailsettings.Smtp.From.Split('@');
+
             mail.Subject = ConfigurationManager.AppSettings["mailSubject"];
             mail.IsBodyHtml = true;
             mail.Body = mailing.GetMailBodyFromTemplate(ConfigurationManager.AppSettings["mailBodyHtmlTemplate"]);
+            mail.Body = mail.Body.Replace("[:RECEPIENT:]", addresspart[0]);
             mail.Attachments.Add(new Attachment(ConfigurationManager.AppSettings["mailBodyImageFile"]));
             mail.Attachments[0].ContentId = "logo.png";
             smtp.UseDefaultCredentials = false;
@@ -174,9 +177,12 @@ namespace ALMailingTest
                                 (int) mailsettings.Smtp.Network.Port
                               );
 
+            string[] addresspart = to.Split('@');
+
             mail.Subject = ConfigurationManager.AppSettings["mailSubject"];
             mail.IsBodyHtml = true;
             mail.Body = mailing.GetMailBodyFromTemplate(ConfigurationManager.AppSettings["mailBodyHtmlTemplate"]);
+            mail.Body = mail.Body.Replace("[:RECEPIENT:]", addresspart[0]);
             mail.Attachments.Add(new Attachment(ConfigurationManager.AppSettings["mailBodyImageFile"]));
             mail.Attachments[0].ContentId = "logo.png";
             smtp.UseDefaultCredentials = false;
@@ -196,23 +202,22 @@ namespace ALMailingTest
             Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
             List<string> laddress = new List<string>()
             {
-                //"alfred.liesecke@kontacts.de",
+                "alfred.liesecke@kontacts.de",
                 "andreas.luedecke@kontacts.de",
-                "a_luedecke@gmx.de",
+                /*"a_luedecke@gmx.de",
                 "a.luedecke4@gmail.com",
                 "c.kapella@freenet.de"
-                /*"andreas.penzold@kontacts.de",
+                "andreas.penzold@kontacts.de",*/
                 "azamat.khasanov@kontacts.de",
                 "ettker@posteo.de",
                 "michael.kickmunter@kontacts.de",
-                "sl@kontacts.de"*/
+                "sl@kontacts.de"
             };
             List<MailMessage> lmail = new List<MailMessage>();
             MailSettingsSectionGroup mailsettings = (MailSettingsSectionGroup)config.GetSectionGroup("system.net/mailSettings");
             Mailing mailing = new Mailing();
             string img_file = ConfigurationManager.AppSettings["mailBodyImageFile"];
             string mailbody = mailing.GetMailBodyFromTemplate(ConfigurationManager.AppSettings["mailBodyHtmlTemplate"]);
-            string mailsubject = ConfigurationManager.AppSettings["mailSubject"];
 
             foreach (string address in laddress)
             {
@@ -220,9 +225,11 @@ namespace ALMailingTest
                                      new MailAddress(address),
                                      new MailAddress(address)
                                    );
-                mail.Subject = mailsubject;
+                string[] addresspart = address.Split('@');
+
+                mail.Subject = addresspart[0];
                 mail.IsBodyHtml = true;
-                mail.Body = mailbody;
+                mail.Body = mailbody.Replace("[:RECEPIENT:]", addresspart[0]);
                 mail.Attachments.Add(new Attachment(img_file));
                 mail.Attachments[0].ContentId = "logo.png";
 

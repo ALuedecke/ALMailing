@@ -85,7 +85,6 @@ namespace ALMailing
 
         public string SendMails(SmtpClient smtp, List<MailMessage> lmail)
         {
-            List<Task> ltask = new List<Task>();
             string msg = "";
 
 
