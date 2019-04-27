@@ -202,16 +202,16 @@ namespace ALMailingTest
             Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
             List<string> laddress = new List<string>()
             {
-                "alfred.liesecke@kontacts.de",
+                //"alfred.liesecke@kontacts.de",
                 "andreas.luedecke@kontacts.de",
-                /*"a_luedecke@gmx.de",
-                "a.luedecke4@gmail.com",
-                "c.kapella@freenet.de"
-                "andreas.penzold@kontacts.de",*/
+                "a_luedecke@gmx.de",
+                "a.luedecke4@gmail.com"
+                /*"c.kapella@freenet.de"
+                "andreas.penzold@kontacts.de"
                 "azamat.khasanov@kontacts.de",
                 "ettker@posteo.de",
                 "michael.kickmunter@kontacts.de",
-                "sl@kontacts.de"
+                "sl@kontacts.de"*/
             };
             List<MailMessage> lmail = new List<MailMessage>();
             MailSettingsSectionGroup mailsettings = (MailSettingsSectionGroup)config.GetSectionGroup("system.net/mailSettings");
