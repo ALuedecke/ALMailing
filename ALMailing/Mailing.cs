@@ -10,24 +10,11 @@ namespace ALMailing
     public class Mailing : MailingInterface
     {
         #region Members
-        private List<NetworkCredential> m_credential;
         private List<MailMessage> m_mail;
-        private List<SmtpClient> m_smtp;
         #endregion
 
         #region Properties
-        public IEnumerable<NetworkCredential> Credential
-        {
-            get
-            {
-                return m_credential;
-            }
-
-            set
-            {
-                m_credential = (List<NetworkCredential>) value;
-            }
-        }
+        public NetworkCredential Credential { get; set; }
 
         public IEnumerable<MailMessage> Mail
         {
@@ -42,18 +29,7 @@ namespace ALMailing
             }
         }
 
-        public IEnumerable<SmtpClient> Smptp
-        {
-            get
-            {
-                return m_smtp;
-            }
-
-            set
-            {
-                m_smtp = (List<SmtpClient>) value;
-            }
-        }
+        public SmtpClient Smtp { get; set; }
         #endregion
 
         #region Constructors
@@ -64,8 +40,8 @@ namespace ALMailing
         public Mailing(SmtpClient smptp, NetworkCredential credantial, MailMessage mail)
         {
             InitMembers();
-            m_smtp.Add(smptp);
-            m_credential.Add(credantial);
+            Smtp =smptp;
+            Credential = credantial;
             m_mail.Add(mail);
         }
         #endregion
@@ -83,10 +59,40 @@ namespace ALMailing
             return template;
         }
 
+        public string SendMails()
+        {
+            return SendMails(Smtp, m_mail);
+        }
+
+        public string SendMails(List<MailMessage> lmail)
+        {
+            return SendMails(Smtp, lmail);
+        }
+
         public string SendMails(SmtpClient smtp, List<MailMessage> lmail)
         {
             string msg = "";
 
+
+            if (smtp == null)
+            {
+                throw new ArgumentException("Cannot be null", "smtp");
+            }
+            if (lmail == null)
+            {
+                throw new ArgumentException("Cannot be null", "lmail");
+            }
+            if (smtp.Credentials == null)
+            {
+                if (Credential == null)
+                {
+                    throw new NullReferenceException("Credential cannot be null") ;
+                }
+                else
+                {
+                    smtp.Credentials = Credential;
+                }
+            }
 
             using (smtp)
             {
@@ -107,6 +113,10 @@ namespace ALMailing
             return msg;
         }
 
+        public string SendSingleMail(MailMessage mail)
+        {
+            return SendSingleMail(Smtp, mail);
+        }
         public string SendSingleMail(SmtpClient smtp, MailMessage mail)
         {
             string msg = "";
@@ -127,13 +137,33 @@ namespace ALMailing
         #region Private Methods
         private void InitMembers()
         {
-            m_credential = new List<NetworkCredential>();
+            Credential = new NetworkCredential();
             m_mail = new List<MailMessage>();
-            m_smtp = new List<SmtpClient>();
+            Smtp = new SmtpClient();
         }
 
         private async Task Send(SmtpClient smtp, MailMessage mail)
         {
+            if (smtp == null)
+            {
+                throw new ArgumentException("Cannot be null", "smtp");
+            }
+            if (mail == null)
+            {
+                throw new ArgumentException("Cannot be null", "lmail");
+            }
+            if (smtp.Credentials == null)
+            {
+                if (Credential == null)
+                {
+                    throw new NullReferenceException("Credential cannot be null");
+                }
+                else
+                {
+                    smtp.Credentials = Credential;
+                }
+            }
+
             using (smtp)
             {
                 await smtp.SendMailAsync(mail);
