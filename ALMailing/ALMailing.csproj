@@ -65,6 +65,8 @@
   <ItemGroup>
     <Compile Include="Mailing.cs" />
     <Compile Include="MailingInterface.cs" />
+    <Compile Include="SendServer.cs" />
+    <Compile Include="SendServerInterface.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

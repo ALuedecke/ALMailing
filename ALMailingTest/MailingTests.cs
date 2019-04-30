@@ -4,7 +4,6 @@ using System.Configuration;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
-using System.Net;
 using System.Net.Configuration;
 
 namespace ALMailingTest
@@ -16,69 +15,75 @@ namespace ALMailingTest
         public void CreateMailingEmpty()
         {
             Mailing mailing = new Mailing();
-            NetworkCredential expCredential = mailing.Credential;
-            SmtpClient expSmtp = mailing.Smtp;
+            SendServer expSendHost = mailing.SendHost;
 
-            Assert.AreEqual(expSmtp, mailing.Smtp);
-            Assert.AreEqual (expCredential, mailing.Credential);
+            Assert.AreEqual(expSendHost, mailing.SendHost);
             Assert.IsEmpty(mailing.Mail);
         }
 
         [Test]
         public void CreateMailingWithParameters()
         {
-            SmtpClient smtp = new SmtpClient("smtp.server.xy");
-            NetworkCredential credential = new NetworkCredential("user.name@domain.xy", "password");
+            SendServer sendhost = new SendServer("smtp.server.xy", 587, "user.name@domain.xy", "password");
             MailMessage mail = new MailMessage("user1.name@domain.xy", "user2.name@domain.xy");
 
-            Mailing mailing = new Mailing(smtp, credential, mail);
+            Mailing mailing = new Mailing(sendhost, mail);
 
-            Assert.AreEqual(mailing.Smtp, smtp);
-            Assert.AreEqual(mailing.Credential, credential);
+            Assert.AreEqual(mailing.SendHost, sendhost);
             Assert.AreEqual(mailing.Mail.First(), mail);
         }
 
         [Test]
-        public void Mailing_Set_SmptServer()
+        public void Mailing_Set_SendServer()
         {
             Mailing mailing = new Mailing();
-            SmtpClient smtp = new SmtpClient();
+            SendServer sendhost = new SendServer();
 
-            mailing.Smtp = smtp;
+            mailing.SendHost = sendhost;
 
-            Assert.AreEqual(mailing.Smtp, smtp);
+            Assert.AreEqual(mailing.SendHost, sendhost);
         }
 
         [Test]
-        public void Mailing_Set_SmptServer_Credential()
+        public void Mailing_Set_SendServer_Credential()
         {
             Mailing mailing = new Mailing();
-            NetworkCredential credential = new NetworkCredential("user.name@domain.xy", "password");
-            SmtpClient smtp = new SmtpClient("smtp.server1.xy");
+            SendServer sendhost = new SendServer();
+            string username = "user.name@domain.xy";
+            string password = "password";
 
-            mailing.Smtp = smtp;
-            mailing.Credential = credential;
+            sendhost.HostName = "smtp.server1.xy";
+            sendhost.NetworkUser = username;
+            sendhost.NetworkPassword = password;
 
-            Assert.AreEqual(mailing.Smtp, smtp);
-            Assert.AreEqual(mailing.Credential, credential);
+            mailing.SendHost = sendhost;
+
+            Assert.AreEqual(mailing.SendHost, sendhost);
+            Assert.AreEqual(mailing.SendHost.NetworkUser, username);
+            Assert.AreEqual(mailing.SendHost.NetworkPassword, password);
         }
 
         [Test]
-        public void Mailing_Set_SmptServer_Credential_Add_2_Mails()
+        public void Mailing_Set_SendServer_Credential_Add_2_Mails()
         {
-            Mailing mailing = new Mailing();
-            NetworkCredential credential = new NetworkCredential("user.name@domain.xy", "password");
             List<MailMessage> lmail = new List<MailMessage>();
-            SmtpClient smtp = new SmtpClient("smtp.server1.xy");
+            Mailing mailing = new Mailing();
+            SendServer sendhost = new SendServer();
+            string username = "user.name@domain.xy";
+            string password = "password";
+
+            sendhost.HostName = "smtp.server1.xy";
+            sendhost.NetworkUser = username;
+            sendhost.NetworkPassword = password;
+            mailing.SendHost = sendhost;
 
             lmail.Add(new MailMessage("user1.name@domain.xy", "user2.name@domain.xy"));
             lmail.Add(new MailMessage("user1.name@domain.yz", "user2.name@domain.yz"));
-            mailing.Smtp = smtp;
-            mailing.Credential = credential;
             mailing.Mail = lmail;
 
-            Assert.AreEqual(mailing.Smtp, smtp);
-            Assert.AreEqual(mailing.Credential, credential);
+            Assert.AreEqual(mailing.SendHost, sendhost);
+            Assert.AreEqual(mailing.SendHost.NetworkUser, username);
+            Assert.AreEqual(mailing.SendHost.NetworkPassword, password);
             Assert.AreEqual(mailing.Mail, lmail);
         }
 
@@ -90,22 +95,19 @@ namespace ALMailingTest
             Mailing mailing = new Mailing();
             MailMessage mail = new MailMessage(
                                  new MailAddress(mailsettings.Smtp.From),
-                                 new MailAddress(mailsettings.Smtp.From)
+                                 new MailAddress(ConfigurationManager.AppSettings["mailDefaultRecipient"])
                                );
-            SmtpClient smtp = new SmtpClient(
-                                mailsettings.Smtp.Network.Host,
-                                (int) mailsettings.Smtp.Network.Port
-                              );
+            SendServer sendhost = new SendServer(
+                                    mailsettings.Smtp.Network.Host,
+                                    (int)mailsettings.Smtp.Network.Port,
+                                    mailsettings.Smtp.Network.UserName,
+                                    mailsettings.Smtp.Network.Password
+                                  );
 
             mail.Subject = ConfigurationManager.AppSettings["mailSubject"];
             mail.Body = mailing.GetMailBodyFromTemplate(ConfigurationManager.AppSettings["mailBodyTxtTemplate"]);
-            smtp.UseDefaultCredentials = false;
-            smtp.Credentials = new NetworkCredential(
-                                 mailsettings.Smtp.Network.UserName,
-                                 mailsettings.Smtp.Network.Password
-                               );
 
-            string msg = mailing.SendSingleMail(smtp, mail);
+            string msg = mailing.SendSingleMail(sendhost, mail);
 
             Assert.IsEmpty(msg);
         }
@@ -118,14 +120,16 @@ namespace ALMailingTest
             Mailing mailing = new Mailing();
             MailMessage mail = new MailMessage(
                                  new MailAddress(mailsettings.Smtp.From),
-                                 new MailAddress(mailsettings.Smtp.From)
+                                 new MailAddress(ConfigurationManager.AppSettings["mailDefaultRecipient"])
                                );
-            SmtpClient smtp = new SmtpClient(
-                                mailsettings.Smtp.Network.Host,
-                                (int) mailsettings.Smtp.Network.Port
-                              );
+            SendServer sendhost = new SendServer(
+                                    mailsettings.Smtp.Network.Host,
+                                    (int)mailsettings.Smtp.Network.Port,
+                                    mailsettings.Smtp.Network.UserName,
+                                    mailsettings.Smtp.Network.Password
+                                  );
 
-            string[] addresspart = mailsettings.Smtp.From.Split('@');
+            string[] addresspart = ConfigurationManager.AppSettings["mailDefaultRecipient"].Split('@');
 
             mail.Subject = ConfigurationManager.AppSettings["mailSubject"];
             mail.IsBodyHtml = true;
@@ -133,13 +137,8 @@ namespace ALMailingTest
             mail.Body = mail.Body.Replace("[:RECEPIENT:]", addresspart[0]);
             mail.Attachments.Add(new Attachment(ConfigurationManager.AppSettings["mailBodyImageFile"]));
             mail.Attachments[0].ContentId = "logo.png";
-            smtp.UseDefaultCredentials = false;
-            smtp.Credentials = new NetworkCredential(
-                                 mailsettings.Smtp.Network.UserName,
-                                 mailsettings.Smtp.Network.Password
-                               );
 
-            string msg = mailing.SendSingleMail(smtp, mail);
+            string msg = mailing.SendSingleMail(sendhost, mail);
 
             Assert.IsEmpty(msg);
         }
@@ -156,15 +155,12 @@ namespace ALMailingTest
                                  new MailAddress(from),
                                  new MailAddress(to)
                                );
-            mailing.Credential = new NetworkCredential(
-                                   mailsettings.Smtp.Network.UserName,
-                                   mailsettings.Smtp.Network.Password
-                                 );
-            mailing.Smtp = new SmtpClient(
-                             mailsettings.Smtp.Network.Host,
-                             (int) mailsettings.Smtp.Network.Port
-                           );
-            mailing.Smtp.UseDefaultCredentials = false;
+            mailing.SendHost = new SendServer(
+                                 mailsettings.Smtp.Network.Host,
+                                 (int)mailsettings.Smtp.Network.Port,
+                                 mailsettings.Smtp.Network.UserName,
+                                 mailsettings.Smtp.Network.Password
+                               );
 
             string[] addresspart = to.Split('@');
 
@@ -180,6 +176,7 @@ namespace ALMailingTest
             Assert.AreEqual(expected, msg);
         }
 
+        /*
         [Test]
         public void MailingSendMailsHtml()
         {
@@ -187,7 +184,7 @@ namespace ALMailingTest
             List<string> laddress = new List<string>()
             {
                 "andreas.luedecke@kontacts.de"
-                /*"alfred.liesecke@kontacts.de",
+                "alfred.liesecke@kontacts.de",
                 "a_luedecke@gmx.de",
                 "a.luedecke4@gmail.com";
                 "c.kapella@freenet.de"
@@ -195,7 +192,7 @@ namespace ALMailingTest
                 "azamat.khasanov@kontacts.de",
                 "ettker@posteo.de",
                 "michael.kickmunter@kontacts.de",
-                "sl@kontacts.de"*/
+                "sl@kontacts.de"
             };
             List<MailMessage> lmail = new List<MailMessage>();
             MailSettingsSectionGroup mailsettings = (MailSettingsSectionGroup)config.GetSectionGroup("system.net/mailSettings");
@@ -235,5 +232,6 @@ namespace ALMailingTest
 
             Assert.IsEmpty(msg);
         }
+        */
     }
 }

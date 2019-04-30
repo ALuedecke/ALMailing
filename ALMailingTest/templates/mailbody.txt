@@ -1,7 +1,7 @@
-An den Möchtegern-Hacker,
+Hallo,
 
-du glaubst mit dieser Masche groß in Bitcoins abkassieren zu können, täusch dich mal nicht.
-Solche Aktionen können voll in die Hose gehen und dann ist das Geschrei groß.
-Du bist entlarvt und es wurde Anzeige erstattet. Freue dich auf den Besuch eines Sondereinsatzkommandos.
+Dies ist eine automatische Mail, die über ALMailingTest.MailingTests versendet wurde.
+Bitte nicht antworten!
 
-Der Anti-Hacker
+Mit freundlichen Grüßen
+MailingTests
