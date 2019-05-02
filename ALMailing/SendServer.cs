@@ -39,7 +39,7 @@ namespace ALMailing
             if (lmail == null)
             {
                 throw new ArgumentException("Cannot be null", "lmail");
-            };
+            }
 
             List<Task> ltask = new List<Task>();
 

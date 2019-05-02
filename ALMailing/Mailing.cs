@@ -71,8 +71,17 @@ namespace ALMailing
             string msg = "";
 
             List<Task> ltask = sendhost.SendMails(lmail);
-
             Task.WaitAll(ltask.ToArray());
+
+            foreach (Task task in ltask)
+            {
+                if (task.Exception != null)
+                {
+                    msg += task.Exception.Message + '\n';
+                }
+
+                task.Dispose();
+            }
 
             return msg;
         }

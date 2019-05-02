@@ -176,23 +176,22 @@ namespace ALMailingTest
             Assert.AreEqual(expected, msg);
         }
 
-        /*
         [Test]
         public void MailingSendMailsHtml()
         {
             Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
             List<string> laddress = new List<string>()
             {
-                "andreas.luedecke@kontacts.de"
-                "alfred.liesecke@kontacts.de",
+                "andreas.luedecke@kontacts.de",
                 "a_luedecke@gmx.de",
-                "a.luedecke4@gmail.com";
-                "c.kapella@freenet.de"
-                "andreas.penzold@kontacts.de"
+                "a.luedecke4@gmail.com"
+                /*"alfred.liesecke@kontacts.de",
+                "c.kapella@freenet.de",
+                "andreas.penzold@kontacts.de",
                 "azamat.khasanov@kontacts.de",
                 "ettker@posteo.de",
                 "michael.kickmunter@kontacts.de",
-                "sl@kontacts.de"
+                "sl@kontacts.de"*/
             };
             List<MailMessage> lmail = new List<MailMessage>();
             MailSettingsSectionGroup mailsettings = (MailSettingsSectionGroup)config.GetSectionGroup("system.net/mailSettings");
@@ -217,21 +216,17 @@ namespace ALMailingTest
                 lmail.Add(mail);
             }
 
-            mailing.Credential = new NetworkCredential(
-                                   mailsettings.Smtp.Network.UserName,
-                                   mailsettings.Smtp.Network.Password
-                                 );
             mailing.Mail = lmail;
-            mailing.Smtp = new SmtpClient(
+            mailing.SendHost = new SendServer(
                                  mailsettings.Smtp.Network.Host,
-                                 (int)mailsettings.Smtp.Network.Port
+                                 (int)mailsettings.Smtp.Network.Port,
+                                 mailsettings.Smtp.Network.UserName,
+                                 mailsettings.Smtp.Network.Password
                                );
-            mailing.Smtp.UseDefaultCredentials = false;
 
             string msg = mailing.SendMails();
 
             Assert.IsEmpty(msg);
         }
-        */
     }
 }
