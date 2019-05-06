@@ -1,7 +1,15 @@
-Hallo,
+Sehr geehrter Email-Kunde,
 
-Dies ist eine automatische Mail, die über ALMailingTest.MailingTests versendet wurde.
-Bitte nicht antworten!
+falls es in den letzten Tagen zu Uregelmäßigkeiten mit Ihrem Email Account:
+
+ - [:RECEPIENT:] -
+
+gekommen sein sollte, bitten wir vielmals um Entschuldigung.
+Es handelte sich um den Testlauf einer neuen Sicherheits-Software zur Erkennung
+und Vermeidung illegaler Benutzung von Email-Konten und Adressen.
+
 
 Mit freundlichen Grüßen
-MailingTests
+Ihr MailControl Team
+
+Hinweis: Dies ist eine automatische Mail, bitte nicht antworten

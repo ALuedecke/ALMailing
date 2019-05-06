@@ -106,6 +106,7 @@ namespace ALMailingTest
 
             mail.Subject = ConfigurationManager.AppSettings["mailSubject"];
             mail.Body = mailing.GetMailBodyFromTemplate(ConfigurationManager.AppSettings["mailBodyTxtTemplate"]);
+            mail.Body = mail.Body.Replace("[:RECEPIENT:]", ConfigurationManager.AppSettings["mailDefaultRecipient"]);
 
             string msg = mailing.SendSingleMail(sendhost, mail);
 
