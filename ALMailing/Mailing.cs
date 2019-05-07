@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Net.Mail;
 using System.Threading.Tasks;
@@ -7,38 +8,21 @@ namespace ALMailing
 {
     public class Mailing : MailingInterface
     {
-        #region Members
-        private List<MailMessage> m_mail;
-        #endregion
-
         #region Properties
-
-        public IEnumerable<MailMessage> Mail
-        {
-            get
-            {
-                return m_mail;
-            }
-
-            set
-            {
-                m_mail = (List<MailMessage>) value;
-            }
-        }
-
+        public Collection<MailMessage> Mails { get; set; }
         public SendServer SendHost { get; set; }
         #endregion
 
         #region Constructors
         public Mailing()
         {
-            m_mail = new List<MailMessage>();
+            Mails = new Collection<MailMessage>();
             SendHost = new SendServer();
         }
         public Mailing(SendServer sendhost, MailMessage mail)
         {
-            m_mail = new List<MailMessage>();
-            m_mail.Add(mail);
+            Mails = new Collection<MailMessage>();
+            Mails.Add(mail);
             SendHost = sendhost;
         }
         #endregion
@@ -58,19 +42,19 @@ namespace ALMailing
 
         public string SendMails()
         {
-            return SendMails(SendHost, m_mail);
+            return SendMails(SendHost, Mails);
         }
 
-        public string SendMails(List<MailMessage> lmail)
+        public string SendMails(Collection<MailMessage> mails)
         {
-            return SendMails(SendHost, lmail);
+            return SendMails(SendHost, mails);
         }
 
-        public string SendMails(SendServer sendhost, List<MailMessage> lmail)
+        public string SendMails(SendServer sendhost, Collection<MailMessage> mails)
         {
             string msg = "";
 
-            List<Task> ltask = sendhost.SendMails(lmail);
+            List<Task> ltask = sendhost.SendMails(mails);
             Task.WaitAll(ltask.ToArray());
 
             foreach (Task task in ltask)

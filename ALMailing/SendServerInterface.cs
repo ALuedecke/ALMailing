@@ -1,5 +1,6 @@
 ﻿using EASendMail;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Net.Mail;
 using System.Threading.Tasks;
 
@@ -17,7 +18,7 @@ namespace ALMailing
 
         #region Methods
         Task SendSingleMail(MailMessage mail);
-        List<Task> SendMails(List<MailMessage> lmail);
+        List<Task> SendMails(Collection<MailMessage> lmail);
         string SendMailTLS(SmtpMail mail, SvrConnType conntype);
         #endregion
     }

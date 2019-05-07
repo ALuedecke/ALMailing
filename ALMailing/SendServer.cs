@@ -1,6 +1,7 @@
 ﻿using EASendMail;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
@@ -41,7 +42,7 @@ namespace ALMailing
         #endregion
 
         #region Public methods
-        public List<Task> SendMails(List<MailMessage> lmail)
+        public List<Task> SendMails(Collection<MailMessage> lmail)
         {
             if (lmail == null)
             {
@@ -78,15 +79,17 @@ namespace ALMailing
         {
             string msg = "";
             EASendMail.SmtpClient smtp = new EASendMail.SmtpClient();
-            SmtpServer svr = new SmtpServer(HostName);
-
-            svr.Port = Port;
-            svr.User = NetworkUser;
-            svr.Password = NetworkPassword;
-            svr.ConnectType = (SmtpConnectType) conntype;
 
             try
             {
+                CheckProperties();
+
+                SmtpServer svr = new SmtpServer(HostName);
+
+                svr.Port = Port;
+                svr.User = NetworkUser;
+                svr.Password = NetworkPassword;
+                svr.ConnectType = (SmtpConnectType)conntype;
                 smtp.SendMail(svr, mail);
             }
             catch (Exception e)

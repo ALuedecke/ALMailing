@@ -67,6 +67,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Email.cs" />
+    <Compile Include="EmailAddress.cs" />
     <Compile Include="Mailing.cs" />
     <Compile Include="MailingInterface.cs" />
     <Compile Include="SendServer.cs" />

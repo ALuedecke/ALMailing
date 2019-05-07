@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.ObjectModel;
 using System.Net.Mail;
 
 namespace ALMailing
@@ -6,7 +6,7 @@ namespace ALMailing
     public interface MailingInterface
     {
         #region Properties
-        IEnumerable<MailMessage> Mail { get; set; }
+        Collection<MailMessage> Mails { get; set; }
         SendServer SendHost { get; set; }
         #endregion
 
@@ -15,8 +15,8 @@ namespace ALMailing
         string SendSingleMail(MailMessage mail);
         string SendSingleMail(SendServer sendhost, MailMessage mail);
         string SendMails();
-        string SendMails(List<MailMessage> lmail);
-        string SendMails(SendServer sendhost, List<MailMessage> lmail);
+        string SendMails(Collection<MailMessage> lmail);
+        string SendMails(SendServer sendhost, Collection<MailMessage> lmail);
         #endregion
     }
 }
