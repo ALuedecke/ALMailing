@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using System.Configuration;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Mail;
 using System.Net.Configuration;
@@ -18,7 +19,7 @@ namespace ALMailingTest
             SendServer expSendHost = mailing.SendHost;
 
             Assert.AreEqual(expSendHost, mailing.SendHost);
-            Assert.IsEmpty(mailing.Mail);
+            Assert.IsEmpty(mailing.Mails);
         }
 
         [Test]
@@ -30,7 +31,7 @@ namespace ALMailingTest
             Mailing mailing = new Mailing(sendhost, mail);
 
             Assert.AreEqual(mailing.SendHost, sendhost);
-            Assert.AreEqual(mailing.Mail.First(), mail);
+            Assert.AreEqual(mailing.Mails.First(), mail);
         }
 
         [Test]
@@ -66,7 +67,7 @@ namespace ALMailingTest
         [Test]
         public void Mailing_Set_SendServer_Credential_Add_2_Mails()
         {
-            List<MailMessage> lmail = new List<MailMessage>();
+            Collection<MailMessage> mails = new Collection<MailMessage>();
             Mailing mailing = new Mailing();
             SendServer sendhost = new SendServer();
             string username = "user.name@domain.xy";
@@ -77,14 +78,14 @@ namespace ALMailingTest
             sendhost.NetworkPassword = password;
             mailing.SendHost = sendhost;
 
-            lmail.Add(new MailMessage("user1.name@domain.xy", "user2.name@domain.xy"));
-            lmail.Add(new MailMessage("user1.name@domain.yz", "user2.name@domain.yz"));
-            mailing.Mail = lmail;
+            mails.Add(new MailMessage("user1.name@domain.xy", "user2.name@domain.xy"));
+            mails.Add(new MailMessage("user1.name@domain.yz", "user2.name@domain.yz"));
+            mailing.Mails = mails;
 
             Assert.AreEqual(mailing.SendHost, sendhost);
             Assert.AreEqual(mailing.SendHost.NetworkUser, username);
             Assert.AreEqual(mailing.SendHost.NetworkPassword, password);
-            Assert.AreEqual(mailing.Mail, lmail);
+            Assert.AreEqual(mailing.Mails, mails);
         }
 
         [Test]
@@ -194,7 +195,7 @@ namespace ALMailingTest
                 "michael.kickmunter@kontacts.de",
                 "sl@kontacts.de"*/
             };
-            List<MailMessage> lmail = new List<MailMessage>();
+            Collection<MailMessage> lmail = new Collection<MailMessage>();
             MailSettingsSectionGroup mailsettings = (MailSettingsSectionGroup)config.GetSectionGroup("system.net/mailSettings");
             Mailing mailing = new Mailing();
             string img_file = ConfigurationManager.AppSettings["mailBodyImageFile"];
@@ -214,10 +215,9 @@ namespace ALMailingTest
                 mail.Attachments.Add(new Attachment(img_file));
                 mail.Attachments[0].ContentId = "logo.png";
 
-                lmail.Add(mail);
+                mailing.Mails.Add(mail);
             }
 
-            mailing.Mail = lmail;
             mailing.SendHost = new SendServer(
                                  mailsettings.Smtp.Network.Host,
                                  (int)mailsettings.Smtp.Network.Port,
