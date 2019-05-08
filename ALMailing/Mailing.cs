@@ -19,6 +19,7 @@ namespace ALMailing
             Mails = new Collection<MailMessage>();
             SendHost = new SendServer();
         }
+
         public Mailing(SendServer sendhost, MailMessage mail)
         {
             Mails = new Collection<MailMessage>();

@@ -23,18 +23,22 @@ namespace ALMailing
         {
             InitClass("", 0, "", "", false);
         }
+
         public SendServer(string host)
         {
             InitClass(host, 25, "", "", false);
         }
+
         public SendServer(string host, string username, string password)
         {
             InitClass(host, 25, username, password, false);
         }
+
         public SendServer(string host, int port, string username, string password)
         {
             InitClass(host, port, username, password, false);
         }
+
         public SendServer(string host, int port, string username, string password, bool usessl)
         {
             InitClass(host, port, username, password, usessl);
@@ -42,7 +46,7 @@ namespace ALMailing
         #endregion
 
         #region Public methods
-        public List<Task> SendMails(Collection<MailMessage> lmail)
+        public List<Task> SendMails(Collection<Email> lmail)
         {
             if (lmail == null)
             {
@@ -51,7 +55,7 @@ namespace ALMailing
 
             List<Task> ltask = new List<Task>();
 
-            foreach (MailMessage mail in lmail)
+            foreach (Email mail in lmail)
             {
                 ltask.Add(SendSingleMail(mail));
             }
@@ -59,7 +63,7 @@ namespace ALMailing
             return ltask;
         }
 
-        public async Task SendSingleMail(MailMessage mail)
+        public async Task SendSingleMail(Email mail)
         {
             CheckProperties();
 

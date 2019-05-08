@@ -12,10 +12,12 @@
         {
             InitClass("", "");
         }
+
         public EmailAddress(string address)
         {
             InitClass(address, "");
         }
+
         public EmailAddress(string address, string displayname)
         {
             InitClass(address, displayname);

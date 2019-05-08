@@ -67,12 +67,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Email.cs" />
-    <Compile Include="EmailAddress.cs" />
+    <Compile Include="Email\Email.cs" />
+    <Compile Include="Email\EmailAddress.cs" />
+    <Compile Include="MailingEnums.cs" />
     <Compile Include="Mailing.cs" />
     <Compile Include="MailingInterface.cs" />
-    <Compile Include="SendServer.cs" />
-    <Compile Include="SendServerInterface.cs" />
+    <Compile Include="SendServer\SendServer.cs" />
+    <Compile Include="SendServer\SendServerInterface.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
