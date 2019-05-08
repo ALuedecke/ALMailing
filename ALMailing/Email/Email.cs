@@ -5,14 +5,15 @@ namespace ALMailing
 {
     public class Email
     {
-
         #region Properties
         public EmailAddress From { get; set; }
         public EmailAddress To { get; set; }
+        public Collection<EmailAddress> Cc { get; set; }
+        public Collection<EmailAddress> Bcc { get; set; }
         public string Subject { get; set; }
         public string Body { get; set; }
         public bool IsHtml { get; set; }
-        Collection<Attachment> Attachments { get; set; }
+        public Collection<EmailAttachment> Attachments { get; set; }
         #endregion
 
         #region Constructors
@@ -37,9 +38,12 @@ namespace ALMailing
         {
             From = from;
             To = to;
+            Cc = new Collection<EmailAddress>();
+            Bcc = new Collection<EmailAddress>();
             Subject = subject;
             Body = body;
             IsHtml = ishtml;
+            Attachments = new Collection<EmailAttachment>();
         }
         #endregion
     }

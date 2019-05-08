@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Net.Mail;
 using System.Threading.Tasks;
 
 namespace ALMailing
@@ -9,20 +8,20 @@ namespace ALMailing
     public class Mailing : MailingInterface
     {
         #region Properties
-        public Collection<MailMessage> Mails { get; set; }
+        public Collection<Email> Mails { get; set; }
         public SendServer SendHost { get; set; }
         #endregion
 
         #region Constructors
         public Mailing()
         {
-            Mails = new Collection<MailMessage>();
+            Mails = new Collection<Email>();
             SendHost = new SendServer();
         }
 
-        public Mailing(SendServer sendhost, MailMessage mail)
+        public Mailing(SendServer sendhost, Email mail)
         {
-            Mails = new Collection<MailMessage>();
+            Mails = new Collection<Email>();
             Mails.Add(mail);
             SendHost = sendhost;
         }
@@ -46,12 +45,12 @@ namespace ALMailing
             return SendMails(SendHost, Mails);
         }
 
-        public string SendMails(Collection<MailMessage> mails)
+        public string SendMails(Collection<Email> mails)
         {
             return SendMails(SendHost, mails);
         }
 
-        public string SendMails(SendServer sendhost, Collection<MailMessage> mails)
+        public string SendMails(SendServer sendhost, Collection<Email> mails)
         {
             string msg = "";
 
@@ -71,11 +70,11 @@ namespace ALMailing
             return msg;
         }
 
-        public string SendSingleMail(MailMessage mail)
+        public string SendSingleMail(Email mail)
         {
             return SendSingleMail(SendHost, mail);
         }
-        public string SendSingleMail(SendServer sendhost, MailMessage mail)
+        public string SendSingleMail(SendServer sendhost, Email mail)
         {
             string msg = "";
             Task task = sendhost.SendSingleMail(mail);

@@ -6,17 +6,17 @@ namespace ALMailing
     public interface MailingInterface
     {
         #region Properties
-        Collection<MailMessage> Mails { get; set; }
+        Collection<Email> Mails { get; set; }
         SendServer SendHost { get; set; }
         #endregion
 
         #region Methods
         string GetMailBodyFromTemplate(string path);
-        string SendSingleMail(MailMessage mail);
-        string SendSingleMail(SendServer sendhost, MailMessage mail);
+        string SendSingleMail(Email mail);
+        string SendSingleMail(SendServer sendhost, Email mail);
         string SendMails();
-        string SendMails(Collection<MailMessage> lmail);
-        string SendMails(SendServer sendhost, Collection<MailMessage> lmail);
+        string SendMails(Collection<Email> lmail);
+        string SendMails(SendServer sendhost, Collection<Email> mails);
         #endregion
     }
 }

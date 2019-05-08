@@ -1,10 +1,8 @@
 ﻿using ALMailing;
 using NUnit.Framework;
 using System.Configuration;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Net.Mail;
 using System.Net.Configuration;
 
 namespace ALMailingTest
@@ -26,7 +24,7 @@ namespace ALMailingTest
         public void CreateMailingWithParameters()
         {
             SendServer sendhost = new SendServer("smtp.server.xy", 587, "user.name@domain.xy", "password");
-            MailMessage mail = new MailMessage("user1.name@domain.xy", "user2.name@domain.xy");
+            Email mail = new Email("user1.name@domain.xy", "user2.name@domain.xy");
 
             Mailing mailing = new Mailing(sendhost, mail);
 
@@ -67,7 +65,7 @@ namespace ALMailingTest
         [Test]
         public void Mailing_Set_SendServer_Credential_Add_2_Mails()
         {
-            Collection<MailMessage> mails = new Collection<MailMessage>();
+            Collection<Email> mails = new Collection<Email>();
             Mailing mailing = new Mailing();
             SendServer sendhost = new SendServer();
             string username = "user.name@domain.xy";
@@ -78,8 +76,8 @@ namespace ALMailingTest
             sendhost.NetworkPassword = password;
             mailing.SendHost = sendhost;
 
-            mails.Add(new MailMessage("user1.name@domain.xy", "user2.name@domain.xy"));
-            mails.Add(new MailMessage("user1.name@domain.yz", "user2.name@domain.yz"));
+            mails.Add(new Email("user1.name@domain.xy", "user2.name@domain.xy"));
+            mails.Add(new Email("user1.name@domain.yz", "user2.name@domain.yz"));
             mailing.Mails = mails;
 
             Assert.AreEqual(mailing.SendHost, sendhost);
@@ -94,13 +92,13 @@ namespace ALMailingTest
             Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
             MailSettingsSectionGroup mailsettings = (MailSettingsSectionGroup) config.GetSectionGroup("system.net/mailSettings");
             Mailing mailing = new Mailing();
-            MailMessage mail = new MailMessage(
-                                 new MailAddress(mailsettings.Smtp.From),
-                                 new MailAddress(ConfigurationManager.AppSettings["mailDefaultRecipient"])
+            Email mail = new Email(
+                                 new EmailAddress(mailsettings.Smtp.From),
+                                 new EmailAddress(ConfigurationManager.AppSettings["mailDefaultRecipient"])
                                );
             SendServer sendhost = new SendServer(
                                     mailsettings.Smtp.Network.Host,
-                                    (int)mailsettings.Smtp.Network.Port,
+                                    (int) mailsettings.Smtp.Network.Port,
                                     mailsettings.Smtp.Network.UserName,
                                     mailsettings.Smtp.Network.Password
                                   );
@@ -120,13 +118,13 @@ namespace ALMailingTest
             Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
             MailSettingsSectionGroup mailsettings = (MailSettingsSectionGroup) config.GetSectionGroup("system.net/mailSettings");
             Mailing mailing = new Mailing();
-            MailMessage mail = new MailMessage(
-                                 new MailAddress(mailsettings.Smtp.From),
-                                 new MailAddress(ConfigurationManager.AppSettings["mailDefaultRecipient"])
+            Email mail = new Email(
+                                 new EmailAddress(mailsettings.Smtp.From),
+                                 new EmailAddress(ConfigurationManager.AppSettings["mailDefaultRecipient"])
                                );
             SendServer sendhost = new SendServer(
                                     mailsettings.Smtp.Network.Host,
-                                    (int)mailsettings.Smtp.Network.Port,
+                                    (int) mailsettings.Smtp.Network.Port,
                                     mailsettings.Smtp.Network.UserName,
                                     mailsettings.Smtp.Network.Password
                                   );
@@ -134,10 +132,10 @@ namespace ALMailingTest
             string[] addresspart = ConfigurationManager.AppSettings["mailDefaultRecipient"].Split('@');
 
             mail.Subject = ConfigurationManager.AppSettings["mailSubject"];
-            mail.IsBodyHtml = true;
+            mail.IsHtml = true;
             mail.Body = mailing.GetMailBodyFromTemplate(ConfigurationManager.AppSettings["mailBodyHtmlTemplate"]);
             mail.Body = mail.Body.Replace("[:RECEPIENT:]", addresspart[0]);
-            mail.Attachments.Add(new Attachment(ConfigurationManager.AppSettings["mailBodyImageFile"]));
+            mail.Attachments.Add(new EmailAttachment(ConfigurationManager.AppSettings["mailBodyImageFile"]));
             mail.Attachments[0].ContentId = "logo.png";
 
             string msg = mailing.SendSingleMail(sendhost, mail);
@@ -153,13 +151,13 @@ namespace ALMailingTest
             Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
             MailSettingsSectionGroup mailsettings = (MailSettingsSectionGroup)config.GetSectionGroup("system.net/mailSettings");
             Mailing mailing = new Mailing();
-            MailMessage mail = new MailMessage(
-                                 new MailAddress(from),
-                                 new MailAddress(to)
+            Email mail = new Email(
+                                 new EmailAddress(from),
+                                 new EmailAddress(to)
                                );
             mailing.SendHost = new SendServer(
                                  mailsettings.Smtp.Network.Host,
-                                 (int)mailsettings.Smtp.Network.Port,
+                                 (int) mailsettings.Smtp.Network.Port,
                                  mailsettings.Smtp.Network.UserName,
                                  mailsettings.Smtp.Network.Password
                                );
@@ -167,10 +165,10 @@ namespace ALMailingTest
             string[] addresspart = to.Split('@');
 
             mail.Subject = ConfigurationManager.AppSettings["mailSubject"];
-            mail.IsBodyHtml = true;
+            mail.IsHtml = true;
             mail.Body = mailing.GetMailBodyFromTemplate(ConfigurationManager.AppSettings["mailBodyHtmlTemplate"]);
             mail.Body = mail.Body.Replace("[:RECEPIENT:]", addresspart[0]);
-            mail.Attachments.Add(new Attachment(ConfigurationManager.AppSettings["mailBodyImageFile"]));
+            mail.Attachments.Add(new EmailAttachment(ConfigurationManager.AppSettings["mailBodyImageFile"]));
             mail.Attachments[0].ContentId = "logo.png";
 
             string msg = mailing.SendSingleMail(mail);
@@ -182,7 +180,7 @@ namespace ALMailingTest
         public void MailingSendMailsHtml()
         {
             Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-            List<string> laddress = new List<string>()
+            Collection<string> laddress = new Collection<string>()
             {
                 "andreas.luedecke@kontacts.de",
                 "a_luedecke@gmx.de",
@@ -195,7 +193,6 @@ namespace ALMailingTest
                 "michael.kickmunter@kontacts.de",
                 "sl@kontacts.de"*/
             };
-            Collection<MailMessage> lmail = new Collection<MailMessage>();
             MailSettingsSectionGroup mailsettings = (MailSettingsSectionGroup)config.GetSectionGroup("system.net/mailSettings");
             Mailing mailing = new Mailing();
             string img_file = ConfigurationManager.AppSettings["mailBodyImageFile"];
@@ -203,16 +200,16 @@ namespace ALMailingTest
 
             foreach (string address in laddress)
             {
-                MailMessage mail = new MailMessage(
-                                     new MailAddress(address),
-                                     new MailAddress(address)
+                Email mail = new Email(
+                                     new EmailAddress(address),
+                                     new EmailAddress(address)
                                    );
                 string[] addresspart = address.Split('@');
 
                 mail.Subject = addresspart[0];
-                mail.IsBodyHtml = true;
+                mail.IsHtml = true;
                 mail.Body = mailbody.Replace("[:RECEPIENT:]", addresspart[0]);
-                mail.Attachments.Add(new Attachment(img_file));
+                mail.Attachments.Add(new EmailAttachment(img_file));
                 mail.Attachments[0].ContentId = "logo.png";
 
                 mailing.Mails.Add(mail);
@@ -220,7 +217,7 @@ namespace ALMailingTest
 
             mailing.SendHost = new SendServer(
                                  mailsettings.Smtp.Network.Host,
-                                 (int)mailsettings.Smtp.Network.Port,
+                                 (int) mailsettings.Smtp.Network.Port,
                                  mailsettings.Smtp.Network.UserName,
                                  mailsettings.Smtp.Network.Password
                                );

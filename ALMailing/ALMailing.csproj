@@ -69,6 +69,7 @@
   <ItemGroup>
     <Compile Include="Email\Email.cs" />
     <Compile Include="Email\EmailAddress.cs" />
+    <Compile Include="Email\EmailAttachment.cs" />
     <Compile Include="MailingEnums.cs" />
     <Compile Include="Mailing.cs" />
     <Compile Include="MailingInterface.cs" />
