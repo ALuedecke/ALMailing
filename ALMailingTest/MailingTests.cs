@@ -1,4 +1,5 @@
 ﻿using ALMailing;
+using ALMailing.Enums;
 using NUnit.Framework;
 using System.Configuration;
 using System.Collections.ObjectModel;
@@ -223,6 +224,32 @@ namespace ALMailingTest
                                );
 
             string msg = mailing.SendMails();
+
+            Assert.IsEmpty(msg);
+        }
+
+        [Test]
+        public void MailingSendMailTLS()
+        {
+            Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            MailSettingsSectionGroup mailsettings = (MailSettingsSectionGroup)config.GetSectionGroup("system.net/mailSettings");
+            Mailing mailing = new Mailing();
+            Email mail = new Email(
+                                 new EmailAddress(mailsettings.Smtp.From),
+                                 new EmailAddress(ConfigurationManager.AppSettings["mailDefaultRecipient"])
+                               );
+            SendServer sendhost = new SendServer(
+                                    mailsettings.Smtp.Network.Host,
+                                    (int)mailsettings.Smtp.Network.Port,
+                                    mailsettings.Smtp.Network.UserName,
+                                    mailsettings.Smtp.Network.Password
+                                  );
+            mail.Subject = ConfigurationManager.AppSettings["mailSubject"];
+            mail.Body = mailing.GetMailBodyFromTemplate(ConfigurationManager.AppSettings["mailBodyTxtTemplate"]);
+            mail.Body = mail.Body.Replace("[:RECEPIENT:]", ConfigurationManager.AppSettings["mailDefaultRecipient"]);
+
+            mailing.SendHost = sendhost;
+            string msg = mailing.SendMailTLS(mail, SvrConnType.STARTTLS);
 
             Assert.IsEmpty(msg);
         }

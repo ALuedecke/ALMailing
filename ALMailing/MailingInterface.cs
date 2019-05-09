@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using ALMailing.Enums;
+using System.Collections.ObjectModel;
 
 namespace ALMailing
 {
@@ -11,6 +12,7 @@ namespace ALMailing
 
         #region Methods
         string GetMailBodyFromTemplate(string path);
+        string SendMailTLS(Email mail, SvrConnType conntype);
         string SendSingleMail(Email mail);
         string SendSingleMail(SendServer sendhost, Email mail);
         string SendMails();

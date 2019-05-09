@@ -16,9 +16,9 @@ namespace ALMailing
         #endregion
 
         #region Methods
+        string SendMailTLS(Email mail, SvrConnType conntype);
         Task SendSingleMail(Email mail);
         List<Task> SendMails(Collection<Email> lmail);
-        string SendMailTLS(Email mail, SvrConnType conntype);
         #endregion
     }
 }

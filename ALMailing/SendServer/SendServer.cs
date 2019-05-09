@@ -47,40 +47,6 @@ namespace ALMailing
         #endregion
 
         #region Public methods
-        public List<Task> SendMails(Collection<Email> lmail)
-        {
-            if (lmail == null)
-            {
-                throw new ArgumentException("Cannot be null", "lmail");
-            }
-
-            List<Task> ltask = new List<Task>();
-
-            foreach (Email mail in lmail)
-            {
-                ltask.Add(SendSingleMail(mail));
-            }
-
-            return ltask;
-        }
-
-        public async Task SendSingleMail(Email mail)
-        {
-            CheckProperties();
-
-            NetworkCredential credential = new NetworkCredential(NetworkUser, NetworkPassword);
-            System.Net.Mail.SmtpClient smtp = new System.Net.Mail.SmtpClient(HostName, Port);
-            smtp.EnableSsl = UseSsl;
-
-
-
-            using (smtp)
-            {
-                await smtp.SendMailAsync(GetSysNetMail(mail));
-            }
-
-        }
-
         public string SendMailTLS(Email mail, SvrConnType conntype)
         {
             string msg = "";
@@ -104,6 +70,40 @@ namespace ALMailing
             }
 
             return msg;
+        }
+
+        public async Task SendSingleMail(Email mail)
+        {
+            CheckProperties();
+
+            NetworkCredential credential = new NetworkCredential(NetworkUser, NetworkPassword);
+            System.Net.Mail.SmtpClient smtp = new System.Net.Mail.SmtpClient(HostName, Port);
+            smtp.EnableSsl = UseSsl;
+
+
+
+            using (smtp)
+            {
+                await smtp.SendMailAsync(GetSysNetMail(mail));
+            }
+
+        }
+
+        public List<Task> SendMails(Collection<Email> lmail)
+        {
+            if (lmail == null)
+            {
+                throw new ArgumentException("Cannot be null", "lmail");
+            }
+
+            List<Task> ltask = new List<Task>();
+
+            foreach (Email mail in lmail)
+            {
+                ltask.Add(SendSingleMail(mail));
+            }
+
+            return ltask;
         }
         #endregion
 

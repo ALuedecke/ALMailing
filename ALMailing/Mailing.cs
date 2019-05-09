@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using ALMailing.Enums;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
@@ -40,6 +41,32 @@ namespace ALMailing
             return template;
         }
 
+        public string SendMailTLS(Email mail, SvrConnType conntype)
+        {
+            return SendHost.SendMailTLS(mail, conntype);
+        }
+
+        public string SendSingleMail(Email mail)
+        {
+            return SendSingleMail(SendHost, mail);
+        }
+
+        public string SendSingleMail(SendServer sendhost, Email mail)
+        {
+            string msg = "";
+            Task task = sendhost.SendSingleMail(mail);
+            task.Wait();
+
+            if (task.Exception != null)
+            {
+                msg = task.Exception.Message;
+            }
+
+            task.Dispose();
+
+            return msg;
+        }
+
         public string SendMails()
         {
             return SendMails(SendHost, Mails);
@@ -66,26 +93,6 @@ namespace ALMailing
 
                 task.Dispose();
             }
-
-            return msg;
-        }
-
-        public string SendSingleMail(Email mail)
-        {
-            return SendSingleMail(SendHost, mail);
-        }
-        public string SendSingleMail(SendServer sendhost, Email mail)
-        {
-            string msg = "";
-            Task task = sendhost.SendSingleMail(mail);
-            task.Wait();
-
-            if (task.Exception != null)
-            {
-                msg = task.Exception.Message;
-            }
-
-            task.Dispose();
 
             return msg;
         }
