@@ -99,7 +99,7 @@ namespace ALMailingTest
                                );
             SendServer sendhost = new SendServer(
                                     mailsettings.Smtp.Network.Host,
-                                    (int) mailsettings.Smtp.Network.Port,
+                                    (int)mailsettings.Smtp.Network.Port,
                                     mailsettings.Smtp.Network.UserName,
                                     mailsettings.Smtp.Network.Password
                                   );
