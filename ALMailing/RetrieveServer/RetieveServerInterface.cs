@@ -13,8 +13,9 @@ namespace ALMailing
         #endregion
 
         #region Methods
-        Collection<Email> RetrieveMails();
+        Collection<Email> RetrieveMailsIMAP();
+        Collection<Email> RetrieveMailsPOP3();
         #endregion
-        bool DeleteMailOnServer(int index);
+        bool DeleteMailOnServer(string uid);
     }
 }

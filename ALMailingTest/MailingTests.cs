@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Configuration;
+using System;
 
 namespace ALMailingTest
 {
@@ -30,6 +31,41 @@ namespace ALMailingTest
 
             Assert.AreEqual(mailing.SendHost, sendhost);
             Assert.AreEqual(mailing.MailsToSend.First(), mail);
+        }
+
+        [Test]
+        public void Mailing_Set_RetrieveServer()
+        {
+            Mailing mailing = new Mailing();
+            RetrieveServer retrievehost = new RetrieveServer();
+
+            mailing.RetrieveHost = retrievehost;
+
+            Assert.AreEqual(mailing.RetrieveHost, retrievehost);
+        }
+
+        [Test]
+        public void Mailing_Set_RetrieveServer_Credential()
+        {
+            Mailing mailing = new Mailing();
+            RetrieveServer retrievehost = new RetrieveServer();
+            string username = "user.name@domain.xy";
+            string password = "password";
+
+            retrievehost.HostName = "pop3.server1.xy";
+            retrievehost.NetworkUser = username;
+            retrievehost.NetworkPassword = password;
+
+            mailing.RetrieveHost = retrievehost;
+
+
+            TestContext.WriteLine("RetrieveHost:                 " + mailing.RetrieveHost.HostName);
+            TestContext.WriteLine("RetrieveHost.NetworkUser:     " + mailing.RetrieveHost.NetworkUser);
+            TestContext.WriteLine("RetrieveHost.NetworkPassword: " + mailing.RetrieveHost.NetworkPassword);
+
+            Assert.AreEqual(mailing.RetrieveHost, retrievehost);
+            Assert.AreEqual(mailing.RetrieveHost.NetworkUser, username);
+            Assert.AreEqual(mailing.RetrieveHost.NetworkPassword, password);
         }
 
         [Test]

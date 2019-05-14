@@ -2,6 +2,12 @@
 
 namespace ALMailing
 {
+    public enum RetrieveType
+    {
+        IMAP,
+        POP3
+    }
+
     public enum SvrConnType
     {
         NORMAL = SmtpConnectType.ConnectNormal,

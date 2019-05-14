@@ -5,6 +5,7 @@
         #region Properties
         public string Path { get; set; }
         public string ContentId { get; set; }
+        public byte[] Data { get; set; }
         #endregion
 
         #region Constructors

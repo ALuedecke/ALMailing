@@ -135,15 +135,6 @@ namespace ALMailing
             }
         }
 
-        private void InitClass(string host, int port, string username, string password, bool usessl)
-        {
-            HostName = host;
-            Port = port;
-            NetworkUser = username;
-            NetworkPassword = password;
-            UseSsl = usessl;
-        }
-
         private MailMessage GetSysNetMail(Email mail)
         {
             MailMessage retmail = new MailMessage(
@@ -227,6 +218,15 @@ namespace ALMailing
             }
 
             return retmail;
+        }
+
+        private void InitClass(string host, int port, string username, string password, bool usessl)
+        {
+            HostName = host;
+            Port = port;
+            NetworkUser = username;
+            NetworkPassword = password;
+            UseSsl = usessl;
         }
         #endregion
     }

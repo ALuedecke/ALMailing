@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Limilabs.Client.POP3;
+using Limilabs.Mail;
+using Limilabs.Mail.Headers;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ALMailing
 {
@@ -45,15 +45,45 @@ namespace ALMailing
         #endregion
 
         #region Public methods
-        public bool DeleteMailOnServer(int index)
+        public bool DeleteMailOnServer(string uid)
         {
             throw new NotImplementedException();
         }
 
-        public Collection<Email> RetrieveMails()
+        public Collection<Email> RetrieveMailsIMAP()
         {
             Collection<Email> retmails = new Collection<Email>();
-            //POP3Client pop3;
+
+            return retmails;
+        }
+
+        public Collection<Email> RetrieveMailsPOP3()
+        {
+            Collection<Email> retmails = new Collection<Email>();
+
+            CheckProperties();
+
+            using (Pop3 pop3 = new Pop3())
+            {
+                if (UseSsl)
+                {
+                    pop3.ConnectSSL(HostName);
+                }
+                else
+                {
+                    pop3.Connect(HostName);
+                }
+
+                foreach (string uid in pop3.GetAll())
+                {
+                    IMail imail = new MailBuilder().CreateFromEml(pop3.GetMessageByUID(uid));
+                    retmails.Add(GetEmail(imail)); 
+                }
+
+                pop3.Close();
+
+            }
+
             return retmails;
         }
         #endregion
@@ -85,6 +115,59 @@ namespace ALMailing
             {
                 throw new NullReferenceException(msg);
             }
+        }
+
+        private Email GetEmail(IMail imail)
+        {
+            Email retmail = new Email();
+
+            retmail.From = new EmailAddress(imail.From.First().Address, imail.From.First().Name);
+            retmail.To = new EmailAddress(imail.To.ToString());
+            
+            if (imail.Cc.Count > 0)
+            {
+                foreach (MailAddress addr in imail.Cc)
+                {
+                    retmail.Cc.Add(new EmailAddress(addr.GetMailboxes().First().Address, addr.Name));
+                }
+            }
+
+            if (imail.Bcc.Count > 0)
+            {
+                foreach (MailAddress addr in imail.Bcc)
+                {
+                    retmail.Cc.Add(new EmailAddress(addr.GetMailboxes().First().Address, addr.Name));
+                }
+            }
+
+            retmail.Subject = imail.Subject;
+
+            if (String.IsNullOrEmpty(imail.Text))
+            {
+                retmail.Body = imail.Html;
+                retmail.IsHtml = true;
+            }
+            else
+            {
+                retmail.Body = imail.Text;
+                retmail.IsHtml = false;
+            }
+            
+            if (imail.Attachments.Count > 0)
+            {
+                foreach (IMimeDataReadOnlyCollection att in imail.Attachments)
+                {
+                    retmail.Attachments.Add(new EmailAttachment()
+                    {
+                        ContentId = att.First().ContentId,
+                        Data = att.First().Data,
+                        Path = att.First().FileName
+                        
+                    });
+                }
+            }
+
+            return retmail;
         }
 
         private void InitClass(string host, int port, string username, string password, bool usessl)
