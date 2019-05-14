@@ -1,4 +1,5 @@
-﻿using Limilabs.Client.POP3;
+﻿using Limilabs.Client.IMAP;
+using Limilabs.Client.POP3;
 using Limilabs.Mail;
 using Limilabs.Mail.Headers;
 using System;
@@ -54,6 +55,25 @@ namespace ALMailing
         {
             Collection<Email> retmails = new Collection<Email>();
 
+            CheckProperties();
+
+            Imap imap = new Imap();
+            
+            using (imap)
+            {
+                imap.Connect(HostName, Port, UseSsl);
+                imap.UseBestLogin(NetworkUser, NetworkPassword);
+
+                imap.ExamineInbox();
+                
+                foreach (long uid in imap.Search(Flag.Unseen))
+                {
+                    IMail imail = new MailBuilder().CreateFromEml(imap.GetMessageByUID(uid));
+                }
+
+                imap.Close();
+            }
+
             return retmails;
         }
 
@@ -63,16 +83,12 @@ namespace ALMailing
 
             CheckProperties();
 
-            using (Pop3 pop3 = new Pop3())
+            Pop3 pop3 = new Pop3();
+
+            using (pop3)
             {
-                if (UseSsl)
-                {
-                    pop3.ConnectSSL(HostName);
-                }
-                else
-                {
-                    pop3.Connect(HostName);
-                }
+                pop3.Connect(HostName, Port, UseSsl);
+                pop3.UseBestLogin(NetworkUser, NetworkPassword);
 
                 foreach (string uid in pop3.GetAll())
                 {
@@ -166,6 +182,8 @@ namespace ALMailing
                     });
                 }
             }
+
+            retmail.Uid = imail.MessageID;
 
             return retmail;
         }

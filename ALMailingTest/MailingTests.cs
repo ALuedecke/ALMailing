@@ -59,8 +59,8 @@ namespace ALMailingTest
             mailing.RetrieveHost = retrievehost;
 
 
-            TestContext.WriteLine("RetrieveHost:                 " + mailing.RetrieveHost.HostName);
-            TestContext.WriteLine("RetrieveHost.NetworkUser:     " + mailing.RetrieveHost.NetworkUser);
+            TestContext.WriteLine("RetrieveHost: " + mailing.RetrieveHost.HostName);
+            TestContext.WriteLine("RetrieveHost.NetworkUser: " + mailing.RetrieveHost.NetworkUser);
             TestContext.WriteLine("RetrieveHost.NetworkPassword: " + mailing.RetrieveHost.NetworkPassword);
 
             Assert.AreEqual(mailing.RetrieveHost, retrievehost);
@@ -123,6 +123,70 @@ namespace ALMailingTest
         }
 
         [Test]
+        public void MailingRetrieveIMAPMails()
+        {
+            string port = ConfigurationManager.AppSettings["imapPort"];
+            RetrieveServer retrievehost = new RetrieveServer(
+                                                ConfigurationManager.AppSettings["imapServer"],
+                                                int.Parse(port),
+                                                ConfigurationManager.AppSettings["imapUser"],
+                                                ConfigurationManager.AppSettings["imapPassword"]
+                                              );
+            retrievehost.UseSsl = true;
+
+            Mailing mailing = new Mailing(retrievehost);
+
+            TestContext.WriteLine(mailing.RetrieveHost.HostName);
+            TestContext.WriteLine(mailing.RetrieveHost.Port);
+            TestContext.WriteLine(mailing.RetrieveHost.NetworkUser);
+            TestContext.WriteLine(mailing.RetrieveHost.NetworkPassword);
+            TestContext.WriteLine(mailing.RetrieveHost.UseSsl);
+
+            string msg = mailing.RetrieveMails(RetrieveType.IMAP);
+
+            foreach (Email mail in mailing.MailsRetrieved)
+            {
+                TestContext.WriteLine("From: " + mail.From);
+                TestContext.WriteLine("Subject: " + mail.Subject);
+                TestContext.WriteLine("---");
+            }
+
+            Assert.IsEmpty(msg);
+        }
+
+        [Test]
+        public void MailingRetrievePOP3Mails()
+        {
+            string port = ConfigurationManager.AppSettings["pop3Port"];
+            RetrieveServer retrievehost = new RetrieveServer(
+                                                ConfigurationManager.AppSettings["pop3Server"],
+                                                int.Parse(port),
+                                                ConfigurationManager.AppSettings["pop3User"],
+                                                ConfigurationManager.AppSettings["pop3Password"]
+                                              );
+            retrievehost.UseSsl = true;
+
+            Mailing mailing = new Mailing(retrievehost);
+
+            TestContext.WriteLine(mailing.RetrieveHost.HostName);
+            TestContext.WriteLine(mailing.RetrieveHost.Port);
+            TestContext.WriteLine(mailing.RetrieveHost.NetworkUser);
+            TestContext.WriteLine(mailing.RetrieveHost.NetworkPassword);
+            TestContext.WriteLine(mailing.RetrieveHost.UseSsl);
+
+            string msg = mailing.RetrieveMails(RetrieveType.POP3);
+
+            foreach (Email mail in mailing.MailsRetrieved)
+            {
+                TestContext.WriteLine("From: " + mail.From);
+                TestContext.WriteLine("Subject: " + mail.Subject);
+                TestContext.WriteLine("---");
+            }
+
+            Assert.IsEmpty(msg);
+        }
+
+        [Test]
         public void MailingSendSingleMail()
         {
             Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
@@ -131,10 +195,10 @@ namespace ALMailingTest
             Email mail = new Email(
                                  new EmailAddress(mailsettings.Smtp.From),
                                  new EmailAddress(ConfigurationManager.AppSettings["mailDefaultRecipient"])
-                               );
+                             );
             SendServer sendhost = new SendServer(
                                     mailsettings.Smtp.Network.Host,
-                                    (int)mailsettings.Smtp.Network.Port,
+                                    mailsettings.Smtp.Network.Port,
                                     mailsettings.Smtp.Network.UserName,
                                     mailsettings.Smtp.Network.Password
                                   );
@@ -160,7 +224,7 @@ namespace ALMailingTest
                                );
             SendServer sendhost = new SendServer(
                                     mailsettings.Smtp.Network.Host,
-                                    (int) mailsettings.Smtp.Network.Port,
+                                    mailsettings.Smtp.Network.Port,
                                     mailsettings.Smtp.Network.UserName,
                                     mailsettings.Smtp.Network.Password
                                   );
@@ -193,7 +257,7 @@ namespace ALMailingTest
                                );
             mailing.SendHost = new SendServer(
                                  mailsettings.Smtp.Network.Host,
-                                 (int) mailsettings.Smtp.Network.Port,
+                                 mailsettings.Smtp.Network.Port,
                                  mailsettings.Smtp.Network.UserName,
                                  mailsettings.Smtp.Network.Password
                                );
@@ -253,7 +317,7 @@ namespace ALMailingTest
 
             mailing.SendHost = new SendServer(
                                  mailsettings.Smtp.Network.Host,
-                                 (int) mailsettings.Smtp.Network.Port,
+                                 mailsettings.Smtp.Network.Port,
                                  mailsettings.Smtp.Network.UserName,
                                  mailsettings.Smtp.Network.Password
                                );
@@ -275,7 +339,7 @@ namespace ALMailingTest
                                );
             SendServer sendhost = new SendServer(
                                     mailsettings.Smtp.Network.Host,
-                                    (int)mailsettings.Smtp.Network.Port,
+                                    mailsettings.Smtp.Network.Port,
                                     mailsettings.Smtp.Network.UserName,
                                     mailsettings.Smtp.Network.Password
                                   );
