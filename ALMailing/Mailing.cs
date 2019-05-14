@@ -1,5 +1,4 @@
-﻿using ALMailing.Enums;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
@@ -9,21 +8,21 @@ namespace ALMailing
     public class Mailing : MailingInterface
     {
         #region Properties
-        public Collection<Email> Mails { get; set; }
+        public Collection<Email> MailsToSend { get; set; }
         public SendServer SendHost { get; set; }
         #endregion
 
         #region Constructors
         public Mailing()
         {
-            Mails = new Collection<Email>();
+            MailsToSend = new Collection<Email>();
             SendHost = new SendServer();
         }
 
-        public Mailing(SendServer sendhost, Email mail)
+        public Mailing(SendServer sendhost, Email mailtosend)
         {
-            Mails = new Collection<Email>();
-            Mails.Add(mail);
+            MailsToSend = new Collection<Email>();
+            MailsToSend.Add(mailtosend);
             SendHost = sendhost;
         }
         #endregion
@@ -69,7 +68,7 @@ namespace ALMailing
 
         public string SendMails()
         {
-            return SendMails(SendHost, Mails);
+            return SendMails(SendHost, MailsToSend);
         }
 
         public string SendMails(Collection<Email> mails)

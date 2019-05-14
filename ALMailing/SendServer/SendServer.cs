@@ -1,5 +1,4 @@
-﻿using ALMailing.Enums;
-using EASendMail;
+﻿using EASendMail;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

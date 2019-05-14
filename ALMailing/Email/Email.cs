@@ -13,6 +13,7 @@ namespace ALMailing
         public string Body { get; set; }
         public bool IsHtml { get; set; }
         public Collection<EmailAttachment> Attachments { get; set; }
+        public int Index { get; set; }
         #endregion
 
         #region Constructors

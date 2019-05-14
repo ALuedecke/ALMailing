@@ -1,5 +1,4 @@
 ﻿using ALMailing;
-using ALMailing.Enums;
 using NUnit.Framework;
 using System.Configuration;
 using System.Collections.ObjectModel;
@@ -18,7 +17,7 @@ namespace ALMailingTest
             SendServer expSendHost = mailing.SendHost;
 
             Assert.AreEqual(expSendHost, mailing.SendHost);
-            Assert.IsEmpty(mailing.Mails);
+            Assert.IsEmpty(mailing.MailsToSend);
         }
 
         [Test]
@@ -30,7 +29,7 @@ namespace ALMailingTest
             Mailing mailing = new Mailing(sendhost, mail);
 
             Assert.AreEqual(mailing.SendHost, sendhost);
-            Assert.AreEqual(mailing.Mails.First(), mail);
+            Assert.AreEqual(mailing.MailsToSend.First(), mail);
         }
 
         [Test]
@@ -79,12 +78,12 @@ namespace ALMailingTest
 
             mails.Add(new Email("user1.name@domain.xy", "user2.name@domain.xy"));
             mails.Add(new Email("user1.name@domain.yz", "user2.name@domain.yz"));
-            mailing.Mails = mails;
+            mailing.MailsToSend = mails;
 
             Assert.AreEqual(mailing.SendHost, sendhost);
             Assert.AreEqual(mailing.SendHost.NetworkUser, username);
             Assert.AreEqual(mailing.SendHost.NetworkPassword, password);
-            Assert.AreEqual(mailing.Mails, mails);
+            Assert.AreEqual(mailing.MailsToSend, mails);
         }
 
         [Test]
@@ -213,7 +212,7 @@ namespace ALMailingTest
                 mail.Attachments.Add(new EmailAttachment(img_file));
                 mail.Attachments[0].ContentId = "logo.png";
 
-                mailing.Mails.Add(mail);
+                mailing.MailsToSend.Add(mail);
             }
 
             mailing.SendHost = new SendServer(

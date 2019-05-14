@@ -1,6 +1,6 @@
 ﻿using EASendMail;
 
-namespace ALMailing.Enums
+namespace ALMailing
 {
     public enum SvrConnType
     {

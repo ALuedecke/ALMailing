@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
 
 namespace ALMailing
 {
-    public interface SendServerInterface
+    public interface RetieveServerInterface
     {
         #region Properties
         string HostName { get; set; }
@@ -15,9 +13,8 @@ namespace ALMailing
         #endregion
 
         #region Methods
-        string SendMailTLS(Email mail, SvrConnType conntype);
-        Task SendSingleMail(Email mail);
-        List<Task> SendMails(Collection<Email> lmail);
+        Collection<Email> RetrieveMails();
         #endregion
+        bool DeleteMailOnServer(int index);
     }
 }

@@ -73,6 +73,8 @@
     <Compile Include="MailingEnums.cs" />
     <Compile Include="Mailing.cs" />
     <Compile Include="MailingInterface.cs" />
+    <Compile Include="RetrieveServer\RetieveServerInterface.cs" />
+    <Compile Include="RetrieveServer\RetrieveServer.cs" />
     <Compile Include="SendServer\SendServer.cs" />
     <Compile Include="SendServer\SendServerInterface.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

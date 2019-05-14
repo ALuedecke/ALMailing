@@ -1,12 +1,11 @@
-﻿using ALMailing.Enums;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 
 namespace ALMailing
 {
     public interface MailingInterface
     {
         #region Properties
-        Collection<Email> Mails { get; set; }
+        Collection<Email> MailsToSend { get; set; }
         SendServer SendHost { get; set; }
         #endregion
 
