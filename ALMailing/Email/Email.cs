@@ -1,12 +1,14 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 
 namespace ALMailing
 {
     public class Email
     {
         #region Properties
+        public DateTime Date { get; set; }
         public EmailAddress From { get; set; }
-        public EmailAddress To { get; set; }
+        public Collection<EmailAddress> To { get; set; }
         public Collection<EmailAddress> Cc { get; set; }
         public Collection<EmailAddress> Bcc { get; set; }
         public string Subject { get; set; }
@@ -19,22 +21,28 @@ namespace ALMailing
         #region Constructors
         public Email()
         {
-            InitClass(new EmailAddress(), new EmailAddress(), "", "", false);
+            InitClass(new EmailAddress(), new Collection<EmailAddress>(), "", "", false);
         }
 
         public Email(EmailAddress from, EmailAddress to)
         {
-            InitClass(from, to, "", "", false);
+            Collection<EmailAddress> lto = new Collection<EmailAddress>();
+            lto.Add(to);
+
+            InitClass(from, lto, "", "", false);
         }
 
         public Email(string from, string to)
         {
-            InitClass(new EmailAddress(from), new EmailAddress(to), "", "", false);
+            Collection<EmailAddress> lto = new Collection<EmailAddress>();
+            lto.Add(new EmailAddress(to));
+
+            InitClass(new EmailAddress(from), lto, "", "", false);
         }
         #endregion
 
         #region Private methods
-        private void InitClass(EmailAddress from, EmailAddress to, string subject, string body, bool ishtml)
+        private void InitClass(EmailAddress from, Collection<EmailAddress> to, string subject, string body, bool ishtml)
         {
             From = from;
             To = to;

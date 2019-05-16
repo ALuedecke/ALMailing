@@ -4,7 +4,6 @@ using System.Configuration;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Configuration;
-using System;
 
 namespace ALMailingTest
 {
@@ -164,7 +163,7 @@ namespace ALMailingTest
                                                 ConfigurationManager.AppSettings["pop3User"],
                                                 ConfigurationManager.AppSettings["pop3Password"]
                                               );
-            retrievehost.UseSsl = true;
+            retrievehost.UseSsl = false;
 
             Mailing mailing = new Mailing(retrievehost);
 
@@ -178,8 +177,12 @@ namespace ALMailingTest
 
             foreach (Email mail in mailing.MailsRetrieved)
             {
-                TestContext.WriteLine("From: " + mail.From);
+                TestContext.WriteLine("Date: " + mail.Date);
+                TestContext.WriteLine("From: " + mail.From.Address + " " + mail.From.DisplayName);
+                TestContext.WriteLine("To: " + mail.To.First().Address);
                 TestContext.WriteLine("Subject: " + mail.Subject);
+                TestContext.WriteLine("---");
+                TestContext.WriteLine(mail.Body);
                 TestContext.WriteLine("---");
             }
 

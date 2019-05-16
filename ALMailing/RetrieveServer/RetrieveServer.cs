@@ -2,6 +2,7 @@
 using Limilabs.Client.POP3;
 using Limilabs.Mail;
 using Limilabs.Mail.Headers;
+using Limilabs.Mail.MIME;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -137,9 +138,17 @@ namespace ALMailing
         {
             Email retmail = new Email();
 
+            retmail.Date = (DateTime)imail.Date;
             retmail.From = new EmailAddress(imail.From.First().Address, imail.From.First().Name);
-            retmail.To = new EmailAddress(imail.To.ToString());
-            
+
+            if (imail.To.Count > 0)
+            {
+                foreach (MailAddress addr in imail.To)
+                {
+                    retmail.To.Add(new EmailAddress(addr.GetMailboxes().First().Address, addr.Name));
+                }
+            }
+
             if (imail.Cc.Count > 0)
             {
                 foreach (MailAddress addr in imail.Cc)
@@ -171,14 +180,13 @@ namespace ALMailing
             
             if (imail.Attachments.Count > 0)
             {
-                foreach (IMimeDataReadOnlyCollection att in imail.Attachments)
+                foreach (MimeData att in imail.Attachments)
                 {
                     retmail.Attachments.Add(new EmailAttachment()
                     {
-                        ContentId = att.First().ContentId,
-                        Data = att.First().Data,
-                        Path = att.First().FileName
-                        
+                        ContentId = att.ContentId,
+                        Data = att.Data,
+                        Path = att.FileName
                     });
                 }
             }
