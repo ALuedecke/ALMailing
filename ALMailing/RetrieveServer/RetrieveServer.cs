@@ -67,9 +67,18 @@ namespace ALMailing
 
                 imap.ExamineInbox();
                 
-                foreach (long uid in imap.Search(Flag.Unseen))
+                foreach (long uid in imap.GetAll())
                 {
                     IMail imail = new MailBuilder().CreateFromEml(imap.GetMessageByUID(uid));
+
+                    if (imail.Date == null)
+                    {
+                        retmails.Add(GetEmail(imail, uid.ToString(), new DateTime?(DateTime.Now)));
+                    }
+                    else
+                    {
+                        retmails.Add(GetEmail(imail, uid.ToString(), imail.Date));
+                    }
                 }
 
                 imap.Close();
@@ -94,11 +103,18 @@ namespace ALMailing
                 foreach (string uid in pop3.GetAll())
                 {
                     IMail imail = new MailBuilder().CreateFromEml(pop3.GetMessageByUID(uid));
-                    retmails.Add(GetEmail(imail)); 
+
+                    if (imail.Date == null)
+                    {
+                        retmails.Add(GetEmail(imail, uid, new DateTime?(DateTime.Now)));
+                    }
+                    else
+                    {
+                        retmails.Add(GetEmail(imail, uid, imail.Date));
+                    }
                 }
 
                 pop3.Close();
-
             }
 
             return retmails;
@@ -134,11 +150,12 @@ namespace ALMailing
             }
         }
 
-        private Email GetEmail(IMail imail)
+        private Email GetEmail(IMail imail, string uid, DateTime? date)
         {
             Email retmail = new Email();
 
-            retmail.Date = (DateTime)imail.Date;
+            retmail.Uid = uid;
+            retmail.Date = date;
             retmail.From = new EmailAddress(imail.From.First().Address, imail.From.First().Name);
 
             if (imail.To.Count > 0)
@@ -190,8 +207,6 @@ namespace ALMailing
                     });
                 }
             }
-
-            retmail.Uid = imail.MessageID;
 
             return retmail;
         }

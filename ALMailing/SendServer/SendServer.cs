@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
@@ -138,14 +137,20 @@ namespace ALMailing
 
         private MailMessage GetSysNetMail(Email mail)
         {
-            MailMessage retmail = new MailMessage(
-                                         new System.Net.Mail.MailAddress(mail.From.Address, mail.From.DisplayName),
-                                         new System.Net.Mail.MailAddress(mail.To.First().Address, mail.To.First().DisplayName)
-                                       );
+            MailMessage retmail = new MailMessage();
 
+            retmail.From = new System.Net.Mail.MailAddress(mail.From.Address, mail.From.DisplayName);
             retmail.Subject = mail.Subject;
             retmail.IsBodyHtml = mail.IsHtml;
             retmail.Body = mail.Body;
+
+            if (mail.To.Count > 0)
+            {
+                foreach (EmailAddress addr in mail.To)
+                {
+                    retmail.To.Add(new System.Net.Mail.MailAddress(addr.Address, addr.DisplayName));
+                }
+            }
 
             if (mail.Cc.Count > 0)
             {
@@ -181,7 +186,6 @@ namespace ALMailing
             SmtpMail retmail = new SmtpMail("TryIt");
 
             retmail.From = new EASendMail.MailAddress(mail.From.DisplayName, mail.From.Address);
-            retmail.To.Add(new EASendMail.MailAddress(mail.To.First().DisplayName, mail.To.First().Address));
             retmail.Subject = mail.Subject;
             
             if (mail.IsHtml)
@@ -191,6 +195,14 @@ namespace ALMailing
             else
             {
                 retmail.TextBody = mail.Body;
+            }
+
+            if (mail.To.Count > 0)
+            {
+                foreach (EmailAddress addr in mail.To)
+                {
+                    retmail.To.Add(new EASendMail.MailAddress(addr.DisplayName, addr.Address));
+                }
             }
 
             if (mail.Cc.Count > 0)

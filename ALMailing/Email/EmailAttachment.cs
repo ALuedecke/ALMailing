@@ -23,6 +23,13 @@
         }
         #endregion
 
+        #region Public overrides
+        public override string ToString()
+        {
+            return ContentId;
+        }
+        #endregion
+
         #region Private methods
         private void InitClass(string path, string contentid)
         {

@@ -2,6 +2,13 @@
 
 namespace ALMailing
 {
+    public enum EmailAddressPart
+    {
+        ADDRESS,
+        DISPLAYNAME,
+        BOTH
+    }
+
     public enum RetrieveType
     {
         IMAP,

@@ -11,7 +11,7 @@ namespace ALMailingTest
     public class MailingTests
     {
         [Test]
-        public void CreateMailingEmpty()
+        public void Create_Mailing_Empty()
         {
             Mailing mailing = new Mailing();
             SendServer expSendHost = mailing.SendHost;
@@ -21,7 +21,7 @@ namespace ALMailingTest
         }
 
         [Test]
-        public void CreateMailingWithParameters()
+        public void Create_Mailing_WithParameters()
         {
             SendServer sendhost = new SendServer("smtp.server.xy", 587, "user.name@domain.xy", "password");
             Email mail = new Email("user1.name@domain.xy", "user2.name@domain.xy");
@@ -122,7 +122,7 @@ namespace ALMailingTest
         }
 
         [Test]
-        public void MailingRetrieveIMAPMails()
+        public void Mailing_RetrieveMails_IMAP()
         {
             string port = ConfigurationManager.AppSettings["imapPort"];
             RetrieveServer retrievehost = new RetrieveServer(
@@ -154,7 +154,7 @@ namespace ALMailingTest
         }
 
         [Test]
-        public void MailingRetrievePOP3Mails()
+        public void Mailing_RetrieveMails_POP3()
         {
             string port = ConfigurationManager.AppSettings["pop3Port"];
             RetrieveServer retrievehost = new RetrieveServer(
@@ -167,30 +167,24 @@ namespace ALMailingTest
 
             Mailing mailing = new Mailing(retrievehost);
 
-            TestContext.WriteLine(mailing.RetrieveHost.HostName);
-            TestContext.WriteLine(mailing.RetrieveHost.Port);
-            TestContext.WriteLine(mailing.RetrieveHost.NetworkUser);
-            TestContext.WriteLine(mailing.RetrieveHost.NetworkPassword);
-            TestContext.WriteLine(mailing.RetrieveHost.UseSsl);
+            TestContext.WriteLine("POP3-Server: " + mailing.RetrieveHost.HostName);
+            TestContext.WriteLine("Port: " + mailing.RetrieveHost.Port);
+            TestContext.WriteLine("Network User: " + mailing.RetrieveHost.NetworkUser);
+            //TestContext.WriteLine(mailing.RetrieveHost.NetworkPassword);
+            TestContext.WriteLine("SSL: " + mailing.RetrieveHost.UseSsl);
 
             string msg = mailing.RetrieveMails(RetrieveType.POP3);
 
             foreach (Email mail in mailing.MailsRetrieved)
             {
-                TestContext.WriteLine("Date: " + mail.Date);
-                TestContext.WriteLine("From: " + mail.From.Address + " " + mail.From.DisplayName);
-                TestContext.WriteLine("To: " + mail.To.First().Address);
-                TestContext.WriteLine("Subject: " + mail.Subject);
-                TestContext.WriteLine("---");
-                TestContext.WriteLine(mail.Body);
-                TestContext.WriteLine("---");
+                TestContext.WriteLine(mail.ToString());
             }
 
             Assert.IsEmpty(msg);
         }
 
         [Test]
-        public void MailingSendSingleMail()
+        public void Mailing_SendSingleMail()
         {
             Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
             MailSettingsSectionGroup mailsettings = (MailSettingsSectionGroup) config.GetSectionGroup("system.net/mailSettings");
@@ -216,7 +210,7 @@ namespace ALMailingTest
         }
 
         [Test]
-        public void MailingSendSingleMailHtml()
+        public void Mailing_SendSingleMail_Html()
         {
             Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
             MailSettingsSectionGroup mailsettings = (MailSettingsSectionGroup) config.GetSectionGroup("system.net/mailSettings");
@@ -246,10 +240,42 @@ namespace ALMailingTest
             Assert.IsEmpty(msg);
         }
 
+        [Test]
+        public void Mailing_SendSingleMail_Html_2_Recipients()
+        {
+            Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            MailSettingsSectionGroup mailsettings = (MailSettingsSectionGroup)config.GetSectionGroup("system.net/mailSettings");
+            Mailing mailing = new Mailing();
+            Email mail = new Email(
+                                 new EmailAddress(mailsettings.Smtp.From),
+                                 new EmailAddress(ConfigurationManager.AppSettings["mailDefaultRecipient"])
+                               );
+            SendServer sendhost = new SendServer(
+                                    mailsettings.Smtp.Network.Host,
+                                    mailsettings.Smtp.Network.Port,
+                                    mailsettings.Smtp.Network.UserName,
+                                    mailsettings.Smtp.Network.Password
+                                  );
+
+            string[] addresspart = ConfigurationManager.AppSettings["mailDefaultRecipient"].Split('@');
+
+            mail.To.Add(new EmailAddress("andreas.luedecke@kontacts.de", "Andreas Lüdecke"));
+            mail.Subject = ConfigurationManager.AppSettings["mailSubject"];
+            mail.IsHtml = true;
+            mail.Body = mailing.GetMailBodyFromTemplate(ConfigurationManager.AppSettings["mailBodyHtmlTemplate"]);
+            mail.Body = mail.Body.Replace("[:RECEPIENT:]", addresspart[0]);
+            mail.Attachments.Add(new EmailAttachment(ConfigurationManager.AppSettings["mailBodyImageFile"]));
+            mail.Attachments[0].ContentId = "logo.png";
+
+            string msg = mailing.SendSingleMail(sendhost, mail);
+
+            Assert.IsEmpty(msg);
+        }
+
         [TestCase("anti.hacker@mailcontrol.com", "andreas.luedecke@kontacts.de", "")]
         //[TestCase("anti.hacker@mailcontrol.com", "a_luedecke@gmx.de", "")]
         //[TestCase("anti.hacker@mailcontrol.com", "a.luedecke4@gmail.com", "")]
-        public void MailingSendSingleMailHtmlWithInput(string from, string to, string expected)
+        public void Mailing_SendSingleMail_Html_WithInput(string from, string to, string expected)
         {
             Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
             MailSettingsSectionGroup mailsettings = (MailSettingsSectionGroup)config.GetSectionGroup("system.net/mailSettings");
@@ -280,7 +306,7 @@ namespace ALMailingTest
         }
 
         [Test]
-        public void MailingSendMailsHtml()
+        public void Mailing_SendMails_Html()
         {
             Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
             Collection<string> laddress = new Collection<string>()
@@ -331,7 +357,7 @@ namespace ALMailingTest
         }
 
         [Test]
-        public void MailingSendMailTLS()
+        public void Mailing_SendMailTLS()
         {
             Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
             MailSettingsSectionGroup mailsettings = (MailSettingsSectionGroup)config.GetSectionGroup("system.net/mailSettings");

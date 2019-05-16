@@ -1,4 +1,6 @@
-﻿namespace ALMailing
+﻿using System;
+
+namespace ALMailing
 {
     public class EmailAddress
     {
@@ -21,6 +23,13 @@
         public EmailAddress(string address, string displayname)
         {
             InitClass(address, displayname);
+        }
+        #endregion
+
+        #region Public overrides
+        public override string ToString()
+        {
+            return Address + (String.IsNullOrEmpty(DisplayName) ? "" : " <" + DisplayName + ">");
         }
         #endregion
 
