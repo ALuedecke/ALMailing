@@ -312,9 +312,13 @@ namespace ALMailingTest
             Collection<string> laddress = new Collection<string>()
             {
                 "andreas.luedecke@kontacts.de",
+                "azamat.khasanov@kontacts.de",
+                "ettker@posteo.de",
+                "michael.kickmunter@kontacts.de",
+                "sl@kontacts.de"
+                /*"alfred.liesecke@kontacts.de",
                 "a_luedecke@gmx.de",
                 "a.luedecke4@gmail.com"
-                /*"alfred.liesecke@kontacts.de",
                 "c.kapella@freenet.de",
                 "andreas.penzold@kontacts.de",
                 "azamat.khasanov@kontacts.de",
