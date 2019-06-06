@@ -272,7 +272,7 @@ namespace ALMailingTest
             Assert.IsEmpty(msg);
         }
 
-        [TestCase("anti.hacker@mailcontrol.com", "andreas.luedecke@kontacts.de", "")]
+        [TestCase("anti.hacker@laydas.com", "andreas.luedecke@laydas.com", "")]
         //[TestCase("anti.hacker@mailcontrol.com", "a_luedecke@gmx.de", "")]
         //[TestCase("anti.hacker@mailcontrol.com", "a.luedecke4@gmail.com", "")]
         public void Mailing_SendSingleMail_Html_WithInput(string from, string to, string expected)
@@ -311,12 +311,12 @@ namespace ALMailingTest
             Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
             Collection<string> laddress = new Collection<string>()
             {
-                "andreas.luedecke@kontacts.de",
-                "azamat.khasanov@kontacts.de",
+                "andreas.luedecke@laydas.com"
+                /*"azamat.khasanov@kontacts.de",
                 "ettker@posteo.de",
                 "michael.kickmunter@kontacts.de",
-                "sl@kontacts.de"
-                /*"alfred.liesecke@kontacts.de",
+                "sl@kontacts.de",
+                "alfred.liesecke@kontacts.de",
                 "a_luedecke@gmx.de",
                 "a.luedecke4@gmail.com"
                 "c.kapella@freenet.de",
