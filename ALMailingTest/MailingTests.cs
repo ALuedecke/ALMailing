@@ -11,7 +11,7 @@ namespace ALMailingTest
     public class MailingTests
     {
         [Test]
-        public void Create_Mailing_Empty()
+        public void Mailing_01_Create_Empty()
         {
             Mailing mailing = new Mailing();
             SendServer expSendHost = mailing.SendHost;
@@ -21,7 +21,7 @@ namespace ALMailingTest
         }
 
         [Test]
-        public void Create_Mailing_WithParameters()
+        public void Mailing_02_Create_WithParameters()
         {
             SendServer sendhost = new SendServer("smtp.server.xy", 587, "user.name@domain.xy", "password");
             Email mail = new Email("user1.name@domain.xy", "user2.name@domain.xy");
@@ -33,7 +33,7 @@ namespace ALMailingTest
         }
 
         [Test]
-        public void Mailing_Set_RetrieveServer()
+        public void Mailing_03_Set_RetrieveServer()
         {
             Mailing mailing = new Mailing();
             RetrieveServer retrievehost = new RetrieveServer();
@@ -44,7 +44,7 @@ namespace ALMailingTest
         }
 
         [Test]
-        public void Mailing_Set_RetrieveServer_Credential()
+        public void Mailing_04_Set_RetrieveServer_Credential()
         {
             Mailing mailing = new Mailing();
             RetrieveServer retrievehost = new RetrieveServer();
@@ -68,7 +68,7 @@ namespace ALMailingTest
         }
 
         [Test]
-        public void Mailing_Set_SendServer()
+        public void Mailing_05_Set_SendServer()
         {
             Mailing mailing = new Mailing();
             SendServer sendhost = new SendServer();
@@ -79,7 +79,7 @@ namespace ALMailingTest
         }
 
         [Test]
-        public void Mailing_Set_SendServer_Credential()
+        public void Mailing_06_Set_SendServer_Credential()
         {
             Mailing mailing = new Mailing();
             SendServer sendhost = new SendServer();
@@ -98,7 +98,7 @@ namespace ALMailingTest
         }
 
         [Test]
-        public void Mailing_Set_SendServer_Credential_Add_2_Mails()
+        public void Mailing_07_Set_SendServer_Credential_Add_2_Mails()
         {
             Collection<Email> mails = new Collection<Email>();
             Mailing mailing = new Mailing();
@@ -122,69 +122,7 @@ namespace ALMailingTest
         }
 
         [Test]
-        public void Mailing_RetrieveMails_IMAP()
-        {
-            string port = ConfigurationManager.AppSettings["imapPort"];
-            RetrieveServer retrievehost = new RetrieveServer(
-                                                ConfigurationManager.AppSettings["imapServer"],
-                                                int.Parse(port),
-                                                ConfigurationManager.AppSettings["imapUser"],
-                                                ConfigurationManager.AppSettings["imapPassword"]
-                                              );
-            retrievehost.UseSsl = true;
-
-            Mailing mailing = new Mailing(retrievehost);
-
-            TestContext.WriteLine(mailing.RetrieveHost.HostName);
-            TestContext.WriteLine(mailing.RetrieveHost.Port);
-            TestContext.WriteLine(mailing.RetrieveHost.NetworkUser);
-            TestContext.WriteLine(mailing.RetrieveHost.NetworkPassword);
-            TestContext.WriteLine(mailing.RetrieveHost.UseSsl);
-
-            string msg = mailing.RetrieveMails(RetrieveType.IMAP);
-
-            foreach (Email mail in mailing.MailsRetrieved)
-            {
-                TestContext.WriteLine("From: " + mail.From);
-                TestContext.WriteLine("Subject: " + mail.Subject);
-                TestContext.WriteLine("---");
-            }
-
-            Assert.IsEmpty(msg);
-        }
-
-        [Test]
-        public void Mailing_RetrieveMails_POP3()
-        {
-            string port = ConfigurationManager.AppSettings["pop3Port"];
-            RetrieveServer retrievehost = new RetrieveServer(
-                                                ConfigurationManager.AppSettings["pop3Server"],
-                                                int.Parse(port),
-                                                ConfigurationManager.AppSettings["pop3User"],
-                                                ConfigurationManager.AppSettings["pop3Password"]
-                                              );
-            retrievehost.UseSsl = false;
-
-            Mailing mailing = new Mailing(retrievehost);
-
-            TestContext.WriteLine("POP3-Server: " + mailing.RetrieveHost.HostName);
-            TestContext.WriteLine("Port: " + mailing.RetrieveHost.Port);
-            TestContext.WriteLine("Network User: " + mailing.RetrieveHost.NetworkUser);
-            //TestContext.WriteLine(mailing.RetrieveHost.NetworkPassword);
-            TestContext.WriteLine("SSL: " + mailing.RetrieveHost.UseSsl);
-
-            string msg = mailing.RetrieveMails(RetrieveType.POP3);
-
-            foreach (Email mail in mailing.MailsRetrieved)
-            {
-                TestContext.WriteLine(mail.ToString());
-            }
-
-            Assert.IsEmpty(msg);
-        }
-
-        [Test]
-        public void Mailing_SendSingleMail()
+        public void Mailing_08_SendSingleMail()
         {
             Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
             MailSettingsSectionGroup mailsettings = (MailSettingsSectionGroup) config.GetSectionGroup("system.net/mailSettings");
@@ -210,7 +148,7 @@ namespace ALMailingTest
         }
 
         [Test]
-        public void Mailing_SendSingleMail_Html()
+        public void Mailing_09_SendSingleMail_Html()
         {
             Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
             MailSettingsSectionGroup mailsettings = (MailSettingsSectionGroup) config.GetSectionGroup("system.net/mailSettings");
@@ -241,7 +179,7 @@ namespace ALMailingTest
         }
 
         [Test]
-        public void Mailing_SendSingleMail_Html_2_Recipients()
+        public void Mailing_10_SendSingleMail_Html_2_Recipients()
         {
             Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
             MailSettingsSectionGroup mailsettings = (MailSettingsSectionGroup)config.GetSectionGroup("system.net/mailSettings");
@@ -275,7 +213,7 @@ namespace ALMailingTest
         [TestCase("anti.hacker@laydas.com", "andreas.luedecke@laydas.com", "")]
         //[TestCase("anti.hacker@mailcontrol.com", "a_luedecke@gmx.de", "")]
         //[TestCase("anti.hacker@mailcontrol.com", "a.luedecke4@gmail.com", "")]
-        public void Mailing_SendSingleMail_Html_WithInput(string from, string to, string expected)
+        public void Mailing_11_SendSingleMail_Html_WithInput(string from, string to, string expected)
         {
             Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
             MailSettingsSectionGroup mailsettings = (MailSettingsSectionGroup)config.GetSectionGroup("system.net/mailSettings");
@@ -306,7 +244,7 @@ namespace ALMailingTest
         }
 
         [Test]
-        public void Mailing_SendMails_Html()
+        public void Mailing_12_SendMails_Html()
         {
             Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
             Collection<string> laddress = new Collection<string>()
@@ -361,7 +299,7 @@ namespace ALMailingTest
         }
 
         [Test]
-        public void Mailing_SendMailTLS()
+        public void Mailing_13_SendMailTLS()
         {
             Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
             MailSettingsSectionGroup mailsettings = (MailSettingsSectionGroup)config.GetSectionGroup("system.net/mailSettings");
@@ -382,6 +320,65 @@ namespace ALMailingTest
 
             mailing.SendHost = sendhost;
             string msg = mailing.SendMailTLS(mail, SvrConnType.STARTTLS);
+
+            Assert.IsEmpty(msg);
+        }
+        [Test]
+        public void Mailing_14_RetrieveMails_IMAP()
+        {
+            string port = ConfigurationManager.AppSettings["imapPort"];
+            RetrieveServer retrievehost = new RetrieveServer(
+                                                ConfigurationManager.AppSettings["imapServer"],
+                                                int.Parse(port),
+                                                ConfigurationManager.AppSettings["imapUser"],
+                                                ConfigurationManager.AppSettings["imapPassword"]
+                                              );
+            retrievehost.UseSsl = true;
+
+            Mailing mailing = new Mailing(retrievehost);
+
+            TestContext.WriteLine("IMAP-Server: " + mailing.RetrieveHost.HostName);
+            TestContext.WriteLine("Port: " + mailing.RetrieveHost.Port);
+            TestContext.WriteLine("Network User: " + mailing.RetrieveHost.NetworkUser);
+            //TestContext.WriteLine(mailing.RetrieveHost.NetworkPassword);
+            TestContext.WriteLine("SSL: " + mailing.RetrieveHost.UseSsl);
+
+            string msg = mailing.RetrieveMails(RetrieveType.IMAP);
+
+            for (int i = mailing.MailsRetrieved.Count - 1; i >= 0; i--)
+            {
+                TestContext.WriteLine(mailing.MailsRetrieved.ElementAt(i));
+            }
+
+            Assert.IsEmpty(msg);
+        }
+
+        [Test]
+        public void Mailing_15_RetrieveMails_POP3()
+        {
+            string port = ConfigurationManager.AppSettings["pop3Port"];
+            RetrieveServer retrievehost = new RetrieveServer(
+                                                ConfigurationManager.AppSettings["pop3Server"],
+                                                int.Parse(port),
+                                                ConfigurationManager.AppSettings["pop3User"],
+                                                ConfigurationManager.AppSettings["pop3Password"]
+                                              );
+            retrievehost.UseSsl = false;
+
+            Mailing mailing = new Mailing(retrievehost);
+
+            TestContext.WriteLine("POP3-Server: " + mailing.RetrieveHost.HostName);
+            TestContext.WriteLine("Port: " + mailing.RetrieveHost.Port);
+            TestContext.WriteLine("Network User: " + mailing.RetrieveHost.NetworkUser);
+            //TestContext.WriteLine(mailing.RetrieveHost.NetworkPassword);
+            TestContext.WriteLine("SSL: " + mailing.RetrieveHost.UseSsl);
+
+            string msg = mailing.RetrieveMails(RetrieveType.POP3);
+
+            for (int i = mailing.MailsRetrieved.Count - 1; i >= 0; i--)
+            {
+                TestContext.WriteLine(mailing.MailsRetrieved.ElementAt(i));
+            }
 
             Assert.IsEmpty(msg);
         }
