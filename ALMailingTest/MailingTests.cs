@@ -249,20 +249,20 @@ namespace ALMailingTest
             Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
             Collection<string> laddress = new Collection<string>()
             {
-                "andreas.luedecke@laydas.com"
-                /*"azamat.khasanov@kontacts.de",
+                "andreas.luedecke@kontacts.de",
+                "azamat.khasanov@kontacts.de",
                 "ettker@posteo.de",
                 "michael.kickmunter@kontacts.de",
                 "sl@kontacts.de",
                 "alfred.liesecke@kontacts.de",
+                /*
                 "a_luedecke@gmx.de",
                 "a.luedecke4@gmail.com"
                 "c.kapella@freenet.de",
                 "andreas.penzold@kontacts.de",
                 "azamat.khasanov@kontacts.de",
-                "ettker@posteo.de",
-                "michael.kickmunter@kontacts.de",
-                "sl@kontacts.de"*/
+                "andreas.luedecke@laydas.com"
+                */
             };
             MailSettingsSectionGroup mailsettings = (MailSettingsSectionGroup)config.GetSectionGroup("system.net/mailSettings");
             Mailing mailing = new Mailing();
@@ -272,7 +272,7 @@ namespace ALMailingTest
             foreach (string address in laddress)
             {
                 Email mail = new Email(
-                                     new EmailAddress(address),
+                                     /*new EmailAddress(address)*/new EmailAddress(mailsettings.Smtp.From),
                                      new EmailAddress(address)
                                    );
                 string[] addresspart = address.Split('@');
