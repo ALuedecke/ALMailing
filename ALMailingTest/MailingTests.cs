@@ -254,8 +254,8 @@ namespace ALMailingTest
                 "ettker@posteo.de",
                 "michael.kickmunter@kontacts.de",
                 "sl@kontacts.de",
-                "alfred.liesecke@kontacts.de",
                 /*
+                "alfred.liesecke@kontacts.de",
                 "a_luedecke@gmx.de",
                 "a.luedecke4@gmail.com"
                 "c.kapella@freenet.de",
